@@ -10,6 +10,7 @@ const socketio = require('socket.io');
 
 const registroRoutes = require('./src/routes/registro.routes');
 const loginRoutes = require('./src/routes/login.routes');
+const homeRoutes = require('./src/routes/home.routes');
 
 const { initConnection } = require('./src/db/conection');
 //const { initSocketIO } = require('./src/socket/socket-server');
@@ -35,7 +36,7 @@ app.get('/', (req, res) => {
 
 app.use('/registro', registroRoutes);
 app.use('/login', loginRoutes);
-
+app.use('/home', homeRoutes);
 
 
 

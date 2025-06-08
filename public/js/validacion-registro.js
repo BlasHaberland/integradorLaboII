@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Crear divs de error para cada campo
     function crearErrorDiv(input) {
         let div = document.createElement('div');
-        div.className = 'text-red-200 bg-rose-900 rounded text-sm mt-1';
+        div.className = 'text-red-200 bg-rose-900 rounded text-sm mt-1 text-center';
         input.parentNode.appendChild(div);
         return div;
     }
