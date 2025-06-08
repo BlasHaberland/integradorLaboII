@@ -18,11 +18,17 @@ router.post('/', [registroFormMiddleware], async (req, res) => {
         const db = await initConnection();
         const hashClave = await bcrypt.hash(clave, 10);
 
+        const formatoNombre = capitalizar(nombre);
+        const formatoApellido = capitalizar(apellido);
+
+        //imagen por defecto de usuario 
+        const imagenDefault = 'default-user.jpg'
+
         await db.query(
-             'INSERT INTO usuarios (nombre, apellido, email, clave, alias) VALUES (?, ?, ?, ?, ?)', [nombre, apellido, email, hashClave, alias]
+             'INSERT INTO usuarios (nombre, apellido, email, clave, alias,imagen_perfil) VALUES (?, ?, ?, ?, ?, ?)', [formatoNombre, formatoApellido, email, hashClave, alias, imagenDefault]
         )
 
-        res.redirect('/index');
+        res.redirect('/');
             
     } catch (error) {
         console.error('Error en el registro:', error);
@@ -33,5 +39,13 @@ router.post('/', [registroFormMiddleware], async (req, res) => {
     }
 })
 
+
+
+//FUNCIONES
+//formato ej: blas -> Blas , BLAS -> Blas
+function capitalizar(str) {
+    console.log(str);
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
 
 module.exports = router;
