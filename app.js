@@ -7,7 +7,9 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const socketio = require('socket.io');
+
 const registroRoutes = require('./src/routes/registro.routes');
+const loginRoutes = require('./src/routes/login.routes');
 
 const { initConnection } = require('./src/db/conection');
 //const { initSocketIO } = require('./src/socket/socket-server');
@@ -27,12 +29,12 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src', 'views'));
 
 //RUTAS
-//pagina de inicio
 app.get('/', (req, res) => {
   res.render('index', { title: 'Inicio' });
 });
-app.use('/registro', registroRoutes);
 
+app.use('/registro', registroRoutes);
+app.use('/login', loginRoutes);
 
 
 
