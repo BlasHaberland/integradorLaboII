@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Artesanos.com - Inicio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen" style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+
+    <!-- capa blur -->
+    <div class="fixed inset-0 backdrop-blur-md bg-black/10 z-0"></div>
+    
+    <!-- principal -->
+    <div class="relative z-10 min-h-screen flex flex-col items-center justify-center w-full gap-10">
+        <h1 class="text-6xl md:text-7xl font-extrabold text-slate-100 text-shadow-lg text-center drop-shadow-lg">
+            BIENVENIDO A <br> ARTESANOS.COM!
+        </h1>
+
+        <div class="bg-orange-200/40 backdrop-blur-sm rounded-3xl p-10 flex flex-col items-center gap-6 shadow-2xl border border-orange-300/60">
+            <a href="/login" class="w-full">
+                <button class="w-60 flex items-center justify-center gap-2 text-xl text-white bg-cyan-500 rounded-xl py-4 font-semibold hover:scale-105 hover:bg-cyan-700 transition-all"><svg width="24" height="24" class="inline-block"><use href="#sing-in"></use></svg>
+                   
+                    Log in
+                </button>
+            </a>
+
+            <a href="/registro" class="w-full">
+                <button class="w-60 text-xl text-white bg-cyan-500 rounded-xl py-4 font-semibold hover:scale-105 hover:bg-cyan-700 transition-all"><svg width="24" height="24" class="inline-block"><use href="#sing-up"></use></svg>
+                    Sing up
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <%- include('partials/icons') %>
+</body>
+</html>
