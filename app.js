@@ -10,6 +10,8 @@ const socketio = require('socket.io');
 
 const registroRoutes = require('./src/routes/registro.routes');
 const loginRoutes = require('./src/routes/login.routes');
+const homeRoutes = require('./src/routes/home.routes');
+const albumesRoutes = require('./src/routes/albumes.routes');
 
 const { initConnection } = require('./src/db/conection');
 //const { initSocketIO } = require('./src/socket/socket-server');
@@ -21,6 +23,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 const server = http.createServer(app);
 
@@ -35,7 +38,8 @@ app.get('/', (req, res) => {
 
 app.use('/registro', registroRoutes);
 app.use('/login', loginRoutes);
-
+app.use('/home', homeRoutes);
+app.use('/albumes', albumesRoutes);
 
 
 
