@@ -37,22 +37,20 @@
             <% if (albumes && albumes.length > 0) { %>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <% albumes.forEach(function(album) { %>
-                        <div class="bg-cyan-800/90 rounded-xl shadow-lg p-4 flex flex-col items-center transition-transform duration-100 will-change-transform cursor-pointer hover:scale-105 hover:shadow-md hover:bg-cyan-500/90 hover:border-2 hover:border-orange-400">
-                            
-                            <img src="<%= album.portada || '/default-album.jpg' %>" alt="Portada álbum" class= "w-52 h-32 object-cover rounded-lg mb-3 ">
-                            <div class="text-lg font-semibold text-cyan-100 text-center"><%= album.titulo %></div>
-                            <div class="text-sm text-white text-center"><%= album.descripcion ? album.descripcion : 
-                            'Sin descripción' %></div>
-
-                            <div class="flex flex-wrap gap-1 justify-center mt-2">
-                                <% if (album.tags && album.tags.length > 0) { %>
-                                    <% album.tags.forEach(function(tag) { %>
-                                        <span class="bg-cyan-900/60 text-cyan-200 px-2 py-0.5 rounded text-xs"><%= tag.nombre %></span>
-                                    <% }) %>
-                                <% } %>
+                        <a href="/albumes/<%= album.id_album %>" class="block">
+                            <div class="bg-cyan-800/90 rounded-xl shadow-lg p-4 flex flex-col items-center transition-transform duration-100 will-change-transform cursor-pointer hover:scale-105 hover:shadow-md hover:bg-cyan-500/90 hover:border-2 hover:border-orange-400">
+                                <img src="<%= album.portada || '/default-album.jpg' %>" alt="Portada álbum" class="w-52 h-32 object-cover rounded-lg mb-3 ">
+                                <div class="text-lg font-semibold text-cyan-100 text-center"><%= album.titulo %></div>
+                                <div class="text-sm text-white text-center"><%= album.descripcion ? album.descripcion : 'Sin descripción' %></div>
+                                <div class="flex flex-wrap gap-1 justify-center mt-2">
+                                    <% if (album.tags && album.tags.length > 0) { %>
+                                        <% album.tags.forEach(function(tag) { %>
+                                            <span class="bg-cyan-900/60 text-cyan-200 px-2 py-0.5 rounded text-xs"><%= tag.nombre %></span>
+                                        <% }) %>
+                                    <% } %>
+                                </div>
                             </div>
-
-                        </div>
+                        </a>
                     <% }) %>
                 </div>
             <% } else { %>
@@ -78,7 +76,7 @@
             <label for="portada" class="text-2xl font-bold text-white mb-"> Escoje una portada para tu album </label>
             <input type="file" name="portada" accept="image/*" class="mb-2" >
             
-            <!-- Mostrar tags como checkboxes -->
+            <!-- tags -->
             <div>
                 <label class="text-2xl font-bold text-white mb-2 block">Selecciona tags para tu álbum</label>
                 <div class="flex flex-wrap gap-2">
