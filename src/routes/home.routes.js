@@ -17,16 +17,28 @@ router.get('/', autMiddleware, async (req, res) => {
             });
         }
 
-        // Traer álbumes del usuario
         const [albumes] = await db.query('SELECT * FROM albumes WHERE id_usuario = ?', [req.usuario.id]);
 
         // Traer tags asociados a los álbumes del usuario
-        const [albumesTags] = await db.query(`
-            SELECT at.id_album, t.id_tag, t.nombre
-            FROM albumes_tags at
-            JOIN tags t ON at.id_tag = t.id_tag
-            WHERE at.id_album IN (?)
-        `, [albumes.map(a => a.id_album)]);
+        const ids = albumes.map(a => a.id_album);
+        if (ids.length === 0) {
+            const [tags] = await db.query('SELECT * FROM tags');
+            console.log('Tags cuando no hay álbumes:', tags);
+            return res.render('home', {
+                title: 'Home',
+                usuario: usuario[0],
+                albumes: [],
+                tags
+            });
+        }
+
+        const [albumesTags] = await db.query(
+            `SELECT at.id_album, t.id_tag, t.nombre
+             FROM albumes_tags at
+             JOIN tags t ON at.id_tag = t.id_tag
+             WHERE at.id_album IN (${ids.map(() => '?').join(',')})`,
+            ids
+        );
 
         // Asignar los tags a cada álbum
         albumes.forEach(album => {
@@ -37,7 +49,7 @@ router.get('/', autMiddleware, async (req, res) => {
 
         // Traer todos los tags para el formulario
         const [tags] = await db.query('SELECT * FROM tags');
-
+        console.log('Tags cuando hay álbumes:', tags);
         res.render('home', {
             title: 'Home',
             usuario: usuario[0],
