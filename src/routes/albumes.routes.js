@@ -6,6 +6,8 @@ const albumFormMiddleware = require('../middleware/album-form.middleware');
 const upload = require('../config/multer.config');  
 const imagenFormMiddleware = require('../middleware/imagen-form.middleware');
 
+
+//crear un nuevo album
 router.post('/nuevo',[autMiddleware,upload.single('portada'),albumFormMiddleware], async (req, res) => {
 
     try {
@@ -46,23 +48,30 @@ router.post('/nuevo',[autMiddleware,upload.single('portada'),albumFormMiddleware
 
 // Mostrar imagenes de un album
 router.get('/:id', async (req, res) => {
-
     try {
         const id_album = req.params.id;
         const db = await initConnection();  
         // Obtener datos del álbum
         const [albumRows] = await db.query('SELECT * FROM albumes WHERE id_album = ?', [id_album]);
-
         if (albumRows.length === 0) return res.status(404).send('Álbum no encontrado');
         const album = albumRows[0];
 
         // Obtener imágenes del álbum
         const [imagenes] = await db.query('SELECT * FROM imagenes WHERE id_album = ?', [id_album]);
 
-        // Ajusta el campo de la URL de la imagen según tu base (ej: img.url o img.ruta)
-        imagenes.forEach(img => {
+        // Para cada imagen, obtener los comentarios y datos de usuario
+        for (let img of imagenes) {
+            const [comentarios] = await db.query(
+                `SELECT c.texto, c.creado_en, u.alias, u.imagen_perfil
+                 FROM comentarios c
+                 JOIN usuarios u ON c.id_usuario = u.id_usuario
+                 WHERE c.id_imagen = ?
+                 ORDER BY c.creado_en ASC`, [img.id_imagen]
+            );
+            console.log('Comentarios para la imagen:', img.id_imagen, comentarios);
+            img.comentarios = comentarios; // Array de comentarios para esa imagen
             img.url = img.ruta || img.url; // Ajusta según tu campo real
-        });
+        }
 
         res.render('album', { album, imagenes });
     } catch (err) {
@@ -90,6 +99,26 @@ router.post('/:id/imagenes/nueva', [autMiddleware, upload.single('imagen')],imag
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al subir la imagen');
+    }
+})
+
+// Comentar imagen
+router.post('/imagenes/comentar', [autMiddleware], async (req, res) => { 
+    try {
+        const { id_imagen, texto } = req.body;
+        const id_usuario = req.usuario.id;
+        const db = await initConnection();
+        console.log('Datos recibidos:', req.body);
+         const [comentario] = await db.query(
+            'INSERT INTO comentarios (id_imagen, id_usuario, texto) VALUES (?, ?, ?)',
+            [id_imagen, id_usuario, texto]
+        );
+        // Responde con un HTML vacío
+        console.log('Comentario guardado:', comentario);
+        res.send('');
+
+    } catch (error) {
+        res.status(500).send('Error al guardar el comentario');
     }
 })
 

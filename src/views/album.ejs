@@ -17,26 +17,47 @@
 
         <!-- Grid de imágenes -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 justify-items-center">
+            
             <div>
-                <button id="abrirModalImagen" class="w-48 h-32 flex flex-col items-center justify-center border-2 border-cyan-400 rounded-lg bg-cyan-900/40 hover:bg-cyan-700/60 transition-all text-white text-5xl font-bold mb-2">
+                <!-- Botón de agregar imagen (más grande) -->
+                <button id="abrirModalImagen" class="w-64 h-40 flex flex-col items-center justify-center border-2 border-cyan-400 rounded-lg bg-cyan-900/40 hover:bg-cyan-700/60 transition-all text-white text-6xl font-bold mb-2">
                     +
                 </button>
                 <div class="text-center text-white">agregar imagen</div>
             </div>
 
-            <!-- Imágenes del álbum -->
+            <!-- Imágenes del álbum (más grandes) -->
             <% if (imagenes && imagenes.length > 0) { %>
                 <% imagenes.forEach(function(img) { %>
-                    <div class="w-48 h-32 rounded-lg overflow-hidden border-2 border-cyan-400 bg-cyan-900/60 shadow-lg flex flex-col items-center hover:scale-105 transition-all cursor-pointer">
+                    <div class="w-64 h-40 rounded-lg overflow-hidden border-2 border-cyan-400 bg-cyan-900/60 shadow-lg flex flex-col items-center hover:scale-105 transition-all cursor-pointer">
                         <img 
                             src="<%= img.url %>" 
                             alt="<%= img.titulo || 'Imagen' %>" 
-                            class="object-cover w-full h-24 cursor-pointer imagen-album"
+                            class="object-cover w-full h-32 cursor-pointer imagen-album"
                             data-url="<%= img.url %>"
                             data-titulo="<%= img.titulo || 'Sin título' %>"
                             data-descripcion="<%= img.descripcion || '' %>"
+                            data-id="<%= img.id_imagen %>"
                         >
                         <div class="text-white text-xs mt-1 px-2 truncate w-full text-center"><%= img.titulo || 'Sin título' %></div>
+
+                        <!-- Comentarios ocultos para el modal -->
+                        <div id="comentarios-img-<%= img.id_imagen %>" class="hidden">
+                            <% if (img.comentarios && img.comentarios.length > 0) { %>
+                                <% img.comentarios.forEach(function(com) { %>
+                                    <div class="flex gap-2 items-start mb-2">
+                                        <img src="<%= com.imagen_perfil === 'default-user.jpg' ? '/default-user.jpg' : '/uploads/' + com.imagen_perfil %>" class="w-8 h-8 rounded-full object-cover">
+                                        <div>
+                                            <div class="font-semibold text-cyan-200 text-sm"><%= com.alias %></div>
+                                            <div class="text-white text-sm"><%= com.texto %></div>
+                                            <div class="text-xs text-cyan-400"><%= com.creado_en.toLocaleString() %></div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="text-cyan-300 text-sm">Sin comentarios aún.</div>
+                            <% } %>
+                        </div>
                     </div>
                 <% }) %>
             <% } %>
@@ -51,6 +72,15 @@
             <img id="imagenModalSrc" src="" alt="Imagen ampliada" class="max-h-[70vh] rounded-lg mb-4 shadow-lg">
             <div id="tituloModal" class="text-white text-lg font-bold mb-2"></div>
             <div id="descripcionModal" class="text-cyan-200 text-sm"></div>
+            
+            <!-- comentario -->
+            <form id="formComentario" action="/albumes/imagenes/comentar" method="POST" target="comentarioFrame" class="w-full mt-4 flex gap-2">
+                <input type="hidden" name="id_imagen" id="inputIdImagen">
+                <input type="text" name="texto" id="inputComentario" class="flex-1 rounded px-2 py-1" placeholder="Escribe un comentario..." required>
+                <button type="submit" class="bg-cyan-600 text-white px-3 rounded">Comentar</button>
+            </form>
+
+            <div id="comentariosModal" class="w-full mt-4 max-h-48 overflow-y-auto space-y-2"></div>
         </div>
     </div>
 
@@ -72,7 +102,10 @@
             </form>
             
     </div>
-   <script>// Modal agregar imagen
+
+    <iframe name="comentarioFrame" style="display:none;"></iframe>
+
+   <script>// 
     document.getElementById('abrirModalImagen').onclick = function(e) {
         e.preventDefault();
         document.getElementById('modalVerImagen').classList.add('hidden');
@@ -82,8 +115,8 @@
         document.getElementById('modalImagen').classList.add('hidden');
     }
      </script>
+     
     <script>
-    // Modal ver imagen
     document.querySelectorAll('.imagen-album').forEach(img => {
         img.onclick = function() {
             document.getElementById('modalImagen').classList.add('hidden');
@@ -91,6 +124,11 @@
             document.getElementById('tituloModal').textContent = this.dataset.titulo || 'Sin título';
             document.getElementById('descripcionModal').textContent = this.dataset.descripcion || '';
             document.getElementById('modalVerImagen').classList.remove('hidden');
+            document.getElementById('inputIdImagen').value = this.dataset.id;
+            
+            // Mostrar comentarios
+            var comentariosDiv = document.getElementById('comentarios-img-' + this.dataset.id);
+            document.getElementById('comentariosModal').innerHTML = comentariosDiv ? comentariosDiv.innerHTML : '';
         }
     });
     document.getElementById('cerrarModalVerImagen').onclick = function() {
@@ -102,4 +140,6 @@
 
 
 </body>
+
+<!-- TODO: CREAR PARTIALS PARA EVITAR LA IDENTACION -->
 </html>
