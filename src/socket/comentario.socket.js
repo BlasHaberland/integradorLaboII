@@ -28,9 +28,13 @@ function comentarioSocket(socket, io) {
                 texto: data.texto,
                 id_imagen: data.id_imagen,
                 alias: usuario[0].alias,
-                imagen_perfil: usuario[0].imagen_perfil === 'default-user.jpg'
-                    ? '/default-user.jpg'
-                    : '/uploads/' + usuario[0].imagen_perfil,
+                imagen_perfil: (() => {
+                    const img = usuario[0].imagen_perfil;
+                    if (!img || img === 'default-user.jpg') return '/default-user.jpg';
+                    if (img.startsWith('/uploads/')) return img;
+                    // Elimina cualquier slash inicial para evitar doble slash
+                    return '/uploads/' + img.replace(/^\/+/, '');
+                })(),
             });
 
         } catch (error) {

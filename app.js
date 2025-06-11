@@ -12,7 +12,8 @@ const loginRoutes = require('./src/routes/login.routes');
 const homeRoutes = require('./src/routes/home.routes');
 const albumesRoutes = require('./src/routes/albumes.routes');
 const logoutRoutes = require('./src/routes/logout.routes');
-
+const buscarRoutes = require('./src/routes/buscar.routes');
+const usuariosRoutes = require('./src/routes/usuarios.routes');
 
 const { initConnection } = require('./src/db/conection');
 
@@ -39,7 +40,8 @@ app.use('/login', loginRoutes);
 app.use('/home', homeRoutes);
 app.use('/albumes', albumesRoutes);
 app.use('/logout', logoutRoutes);
-
+app.use('/buscar', buscarRoutes);
+app.use('/usuario', usuariosRoutes);
 
 //SocketIO
 const { Server } = require('socket.io');

@@ -1,9 +1,12 @@
-    //Subir una imagen
-    document.getElementById('abrirModalImagen').onclick = function(e) {
-        e.preventDefault();
-        document.getElementById('modalVerImagen').classList.add('hidden');
-        document.getElementById('modalImagen').classList.remove('hidden');
-    };
+//Subir una imagen
+    const btnAbrirModal = document.getElementById('abrirModalImagen');
+    if (btnAbrirModal) {
+        btnAbrirModal.onclick = function(e) {
+            e.preventDefault();
+            document.getElementById('modalVerImagen').classList.add('hidden');
+            document.getElementById('modalImagen').classList.remove('hidden');
+        };
+    }
     document.getElementById('cerrarModalImagen').onclick = function() {
         document.getElementById('modalImagen').classList.add('hidden');
     }
@@ -28,4 +31,3 @@
         document.getElementById('modalVerImagen').classList.add('hidden');
         document.getElementById('imagenModalSrc').src = '';
     }
-    

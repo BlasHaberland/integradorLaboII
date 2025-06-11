@@ -19,14 +19,17 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 justify-items-center">
             
             <div>
-                <!-- Botón de agregar imagen (más grande) -->
+                <!-- Botón de agregar imagen  -->
+                 <% if (usuarioLogueado && usuarioLogueado.id === album.id_usuario) { %>
                 <button id="abrirModalImagen" class="w-64 h-40 flex flex-col items-center justify-center border-2 border-cyan-400 rounded-lg bg-cyan-900/40 hover:bg-cyan-700/60 transition-all text-white text-6xl font-bold mb-2">
                     +
                 </button>
-                <div class="text-center text-white">agregar imagen</div>
+                <div class="text-center text-white"> agregar imagen</div>
+                <% } %>
+
             </div>
 
-            <!-- Imágenes del álbum (más grandes) -->
+            <!-- Imágenes del álbum -->
             <% if (imagenes && imagenes.length > 0) { %>
                 <% imagenes.forEach(function(img) { %>
                     <div class="w-64 h-40 rounded-lg overflow-hidden border-2 border-cyan-400 bg-cyan-900/60 shadow-lg flex flex-col items-center hover:scale-105 transition-all cursor-pointer">
@@ -46,7 +49,7 @@
                             <% if (img.comentarios && img.comentarios.length > 0) { %>
                                 <% img.comentarios.forEach(function(com) { %>
                                     <div class="flex gap-2 items-start mb-2">
-                                        <img src="<%= com.imagen_perfil === 'default-user.jpg' ? '/default-user.jpg' : '/uploads/' + com.imagen_perfil %>" class="w-8 h-8 rounded-full object-cover">
+                                        <img src="<%= com.imagen_perfil === 'default-user.jpg' ? '/default-user.jpg' : com.imagen_perfil %>" class="w-8 h-8 rounded-full object-cover">
                                         <div>
                                             <div class="font-semibold text-cyan-200 text-sm"><%= com.alias %></div>
                                             <div class="text-white text-sm"><%= com.texto %></div>
@@ -106,12 +109,14 @@
     <!-- <iframe name="comentarioFrame" style="display:none;"></iframe> -->
     <script src="/js/album.js"></script>
     <script src=" /socket.io/socket.io.js"></script>
+
     <!-- <script>
         const socket = io();
         socket.on('connect', () => {
             console.log('Conectado a Socket.IO con id:', socket.id);
             });
         </script> -->
+
         <script>    
         window.usuarioActual={
             id_usuario: "<%= usuario.id %>",
@@ -125,4 +130,5 @@
 </body>
 
 <!-- TODO: CREAR PARTIALS PARA EVITAR LA IDENTACION -->
+<!-- TODO: ARREGLAR BUG DE QUE DE CARGA DEL COMENTARIO SIN REFRESCAR LA PAGINA -->
 </html>

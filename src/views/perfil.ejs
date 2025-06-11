@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil de <%= usuario.alias %> - Artesanos.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen" style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+
+    <%- include('partials/navbar') %>
+    <div class="fixed inset-0 backdrop-blur-md bg-black/10 z-0"></div>
+
+    <div class="relative z-10 flex flex-row items-start justify-center min-h-screen w-full gap-10 py-16 pt-24">
+
+        <!-- Panel de usuario -->
+        <div class="bg-orange-200/40 backdrop-blur-sm rounded-3xl p-10 flex flex-col items-center gap-4 shadow-2xl border border-orange-300/60 w-80 ml-2">
+            <img src="<%= usuario.imagen_perfil && usuario.imagen_perfil !== 'default-user.jpg'
+                ? (usuario.imagen_perfil.startsWith('/uploads/') ? usuario.imagen_perfil : '/uploads/' + usuario.imagen_perfil)
+                : '/default-user.jpg' %>"
+                alt="Imagen de perfil"
+                class="w-40 h-40 rounded-full object-cover border-4 border-cyan-400 shadow-lg mb-4">
+            <h2 class="text-3xl font-bold text-white text-center"><%= usuario.nombre %></h2>
+            <p class="text-lg text-cyan-400 font-semibold text-center">@<%= usuario.alias %></p>
+            <p class="text-lg text-cyan-400 font-semibold text-center">intereses: <%= usuario.antecedentes === null ? 'el usuario no tiene antecedentes' : usuario.antecedentes %></p>
+        </div>
+
+        <!-- Álbumes del usuario -->
+        <div class="flex-1 p-4">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                    Álbumes de <%= usuario.alias %>
+                </h3>
+            </div>
+            <% if (albumes && albumes.length > 0) { %>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <% albumes.forEach(function(album) { %>
+                        <a href="/albumes/<%= album.id_album %>" class="block">
+                            <div class="bg-cyan-800/90 rounded-xl shadow-lg p-4 flex flex-col items-center transition-transform duration-100 will-change-transform cursor-pointer hover:scale-105 hover:shadow-md hover:bg-cyan-500/90 hover:border-2 hover:border-orange-400">
+                                 <img src="<%= album.portada || '/default-album.jpg' %>" alt="Portada álbum" class="w-52 h-32 object-cover rounded-lg mb-3 ">
+                                <div class="text-lg font-semibold text-cyan-100 text-center"><%= album.titulo %></div>
+                                <div class="text-sm text-white text-center"><%= album.descripcion ? album.descripcion : 'Sin descripción' %></div>
+                                <div class="flex flex-wrap gap-1 justify-center mt-2">
+                                    <% if (album.tags && album.tags.length > 0) { %>
+                                        <% album.tags.forEach(function(tag) { %>
+                                            <span class="bg-cyan-900/60 text-cyan-200 px-2 py-0.5 rounded text-xs"><%= tag.nombre %></span>
+                                        <% }) %>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </a>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="text-white text-lg">Este usuario no tiene álbumes aún.</div>
+            <% } %>
+        </div>
+    </div>
+    <%- include('partials/icons') %>
+</body>
+</html>

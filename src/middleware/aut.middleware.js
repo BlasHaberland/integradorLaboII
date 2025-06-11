@@ -8,6 +8,9 @@ const autMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_CLAVE);
     req.usuario = decoded; // <- Guarda la información del usuario en el objeto de solicitud
+    res.locals.usuarioLogueado = decoded; // <- Guarda la información del usuario para usarla en las vistas
+    console.log('decoded:', decoded)
+    
     next();
   } catch (error) {
     console.error('Error al verificar el token:', error);
