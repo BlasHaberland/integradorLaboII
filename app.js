@@ -1,12 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
-const cors = require('cors');
+// const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const socketio = require('socket.io');
+
+
 
 const registroRoutes = require('./src/routes/registro.routes');
 const loginRoutes = require('./src/routes/login.routes');
@@ -14,10 +13,8 @@ const homeRoutes = require('./src/routes/home.routes');
 const albumesRoutes = require('./src/routes/albumes.routes');
 const logoutRoutes = require('./src/routes/logout.routes');
 
+
 const { initConnection } = require('./src/db/conection');
-//const { initSocketIO } = require('./src/socket/socket-server');
-const upload = require('./src/config/multer.config');
-const autMiddleware = require('./src/middleware/aut.middleware');
 
 
 const PORT = process.env.PORT || 3000;
@@ -44,7 +41,13 @@ app.use('/albumes', albumesRoutes);
 app.use('/logout', logoutRoutes);
 
 
+//SocketIO
+const { Server } = require('socket.io');
+const io = new Server(server);
+const { socketServer } = require('./src/socket/socket-server');
+socketServer(io);
 
+// CONECCION
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   initConnection()

@@ -47,9 +47,11 @@ router.post('/nuevo',[autMiddleware,upload.single('portada'),albumFormMiddleware
 })   
 
 // Mostrar imagenes de un album
-router.get('/:id', async (req, res) => {
+router.get('/:id', [autMiddleware], async (req, res) => {
     try {
         const id_album = req.params.id;
+        console.log('usuario actual:', req.usuario);
+
         const db = await initConnection();  
         // Obtener datos del álbum
         const [albumRows] = await db.query('SELECT * FROM albumes WHERE id_album = ?', [id_album]);
@@ -72,8 +74,13 @@ router.get('/:id', async (req, res) => {
             img.comentarios = comentarios; // Array de comentarios para esa imagen
             img.url = img.ruta || img.url; // Ajusta según tu campo real
         }
+        console.log(req.usuario);
+        res.render('album', {
+            album,
+            imagenes,
+            usuario: req.usuario
+        });
 
-        res.render('album', { album, imagenes });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error interno');
@@ -102,24 +109,24 @@ router.post('/:id/imagenes/nueva', [autMiddleware, upload.single('imagen')],imag
     }
 })
 
-// Comentar imagen
-router.post('/imagenes/comentar', [autMiddleware], async (req, res) => { 
-    try {
-        const { id_imagen, texto } = req.body;
-        const id_usuario = req.usuario.id;
-        const db = await initConnection();
-        console.log('Datos recibidos:', req.body);
-         const [comentario] = await db.query(
-            'INSERT INTO comentarios (id_imagen, id_usuario, texto) VALUES (?, ?, ?)',
-            [id_imagen, id_usuario, texto]
-        );
-        // Responde con un HTML vacío
-        console.log('Comentario guardado:', comentario);
-        res.send('');
+// // Comentar imagen
+// router.post('/imagenes/comentar', [autMiddleware], async (req, res) => { 
+//     try {
+//         const { id_imagen, texto } = req.body;
+//         const id_usuario = req.usuario.id;
+//         const db = await initConnection();
+//         console.log('Datos recibidos:', req.body);
+//          const [comentario] = await db.query(
+//             'INSERT INTO comentarios (id_imagen, id_usuario, texto) VALUES (?, ?, ?)',
+//             [id_imagen, id_usuario, texto]
+//         );
 
-    } catch (error) {
-        res.status(500).send('Error al guardar el comentario');
-    }
-})
+//         console.log('Comentario guardado:', comentario);
+//         res.send('');
+
+//     } catch (error) {
+//         res.status(500).send('Error al guardar el comentario');
+//     }
+// })
 
 module.exports = router;

@@ -74,9 +74,9 @@
             <div id="descripcionModal" class="text-cyan-200 text-sm"></div>
             
             <!-- comentario -->
-            <form id="formComentario" action="/albumes/imagenes/comentar" method="POST" target="comentarioFrame" class="w-full mt-4 flex gap-2">
+            <form id="formComentario" class="w-full mt-4 flex gap-2">
                 <input type="hidden" name="id_imagen" id="inputIdImagen">
-                <input type="text" name="texto" id="inputComentario" class="flex-1 rounded px-2 py-1" placeholder="Escribe un comentario..." required>
+                <input type="text" name="texto" id="comentario" class="flex-1 rounded px-2 py-1" placeholder="Escribe un comentario..." required>
                 <button type="submit" class="bg-cyan-600 text-white px-3 rounded">Comentar</button>
             </form>
 
@@ -103,42 +103,25 @@
             
     </div>
 
-    <iframe name="comentarioFrame" style="display:none;"></iframe>
-
-   <script>// 
-    document.getElementById('abrirModalImagen').onclick = function(e) {
-        e.preventDefault();
-        document.getElementById('modalVerImagen').classList.add('hidden');
-        document.getElementById('modalImagen').classList.remove('hidden');
-    };
-    document.getElementById('cerrarModalImagen').onclick = function() {
-        document.getElementById('modalImagen').classList.add('hidden');
-    }
-     </script>
-     
-    <script>
-    document.querySelectorAll('.imagen-album').forEach(img => {
-        img.onclick = function() {
-            document.getElementById('modalImagen').classList.add('hidden');
-            document.getElementById('imagenModalSrc').src = this.dataset.url;
-            document.getElementById('tituloModal').textContent = this.dataset.titulo || 'Sin título';
-            document.getElementById('descripcionModal').textContent = this.dataset.descripcion || '';
-            document.getElementById('modalVerImagen').classList.remove('hidden');
-            document.getElementById('inputIdImagen').value = this.dataset.id;
-            
-            // Mostrar comentarios
-            var comentariosDiv = document.getElementById('comentarios-img-' + this.dataset.id);
-            document.getElementById('comentariosModal').innerHTML = comentariosDiv ? comentariosDiv.innerHTML : '';
+    <!-- <iframe name="comentarioFrame" style="display:none;"></iframe> -->
+    <script src="/js/album.js"></script>
+    <script src=" /socket.io/socket.io.js"></script>
+    <!-- <script>
+        const socket = io();
+        socket.on('connect', () => {
+            console.log('Conectado a Socket.IO con id:', socket.id);
+            });
+        </script> -->
+        <script>    
+        window.usuarioActual={
+            id_usuario: "<%= usuario.id %>",
+            alias: "<%= usuario.alias %>",
+            imagen_perfil: "<%= usuario.imagen_perfil %>"
         }
-    });
-    document.getElementById('cerrarModalVerImagen').onclick = function() {
-        document.getElementById('modalVerImagen').classList.add('hidden');
-        document.getElementById('imagenModalSrc').src = '';
-    }
+        </script>
+
+        <script src="/js/comentarios.js"></script>
     
-    </script>
-
-
 </body>
 
 <!-- TODO: CREAR PARTIALS PARA EVITAR LA IDENTACION -->
