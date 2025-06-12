@@ -16,13 +16,36 @@ router.get('/:alias',[autMiddleware], async (req, res) => {
         }
         const usuario = usuarios[0];
 
-        const [albumes] = await db.query('SELECT * FROM albumes WHERE id_usuario = ?', [usuario.id_usuario]);
+        let albumes = [];
 
+        // Verificar si hay amistad aceptada
+        let amistadAceptada = false;
+        if (usuario.id_usuario !== req.usuario.id) {
+            const [amistad] = await db.query(`
+                SELECT * FROM amistades 
+                WHERE 
+                    (
+                        (id_remitente = ? AND id_destinatario = ?)
+                        OR
+                        (id_remitente = ? AND id_destinatario = ?)
+                    )
+                    AND estado = 'aceptada'
+                LIMIT 1
+            `, [req.usuario.id, usuario.id_usuario, usuario.id_usuario, req.usuario.id]);
+            amistadAceptada = amistad.length > 0;
+        }
+
+        // Mostrar álbumes si el perfil es público o hay amistad aceptada
+        if (usuario.portafolio_publico === 1 || amistadAceptada || usuario.id_usuario === req.usuario.id) {
+            [albumes] = await db.query('SELECT * FROM albumes WHERE id_usuario = ?', [usuario.id_usuario]);
+        }
 
         res.render('perfil', {
             usuario,
             albumes,
-            mensaje
+            mensaje,
+            usuarioLogueado: req.usuario,
+            puedeVerAlbumes: usuario.portafolio_publico === 1 || amistadAceptada || usuario.id_usuario === req.usuario.id
         });
 
     } catch (error) {

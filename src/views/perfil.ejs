@@ -70,7 +70,11 @@
                     <% }) %>
                 </div>
             <% } else { %>
-                <div class="text-white text-lg">Este usuario no tiene álbumes aún.</div>
+                <% if (!puedeVerAlbumes) { %>
+                    <div class="text-white text-lg">El portafolio de este usuario es privado.</div>
+                <% } else { %>
+                    <div class="text-white text-lg">Este usuario no tiene álbumes aún.</div>
+                <% } %>
             <% } %>
         </div>
     </div>
