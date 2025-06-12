@@ -1,5 +1,15 @@
 <nav class="w-full flex items-center justify-between px-8 py-4 bg-black/40 border-b border-white/30 fixed top-0 left-0 z-20 backdrop-blur-md">
 
+    <!-- Botón Home a la izquierda -->
+    <div class="flex-none">
+        <a href="/home" class="flex items-center px-4 py-2 rounded border border-white/40 text-white bg-black/30 hover:bg-orange-400 hover:text-black transition">
+            <svg width="24" height="24" class="mr-2">
+                <use href="#home"></use>
+            </svg>
+            Home
+        </a>
+    </div>
+
     <div class="flex-1 flex justify-center">
         <div class="relative w-96">
             <form id="form-busqueda" action="/buscar" method="GET">
