@@ -14,6 +14,7 @@ const albumesRoutes = require('./src/routes/albumes.routes');
 const logoutRoutes = require('./src/routes/logout.routes');
 const buscarRoutes = require('./src/routes/buscar.routes');
 const usuariosRoutes = require('./src/routes/usuarios.routes');
+const amistadesRoutes = require('./src/routes/amistades.routes');
 
 const { initConnection } = require('./src/db/conection');
 
@@ -42,6 +43,7 @@ app.use('/albumes', albumesRoutes);
 app.use('/logout', logoutRoutes);
 app.use('/buscar', buscarRoutes);
 app.use('/usuario', usuariosRoutes);
+app.use('/amistades', amistadesRoutes);
 
 //SocketIO
 const { Server } = require('socket.io');

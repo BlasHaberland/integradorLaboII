@@ -19,6 +19,17 @@ router.get('/', autMiddleware, async (req, res) => {
 
         const [albumes] = await db.query('SELECT * FROM albumes WHERE id_usuario = ?', [req.usuario.id]);
 
+        // Traer solicitudes de amistad recibidas
+        const [solicitudesRecibidas] = await db.query(`
+            SELECT a.*, u.alias, u.imagen_perfil
+            FROM amistades a
+            JOIN usuarios u ON a.id_remitente = u.id_usuario
+            WHERE a.id_destinatario = ?
+            ORDER BY a.fecha DESC
+        `, [req.usuario.id]);
+
+        console.log('Solicitudes recibidas:', solicitudesRecibidas);
+
         // Traer tags asociados a los álbumes del usuario
         const ids = albumes.map(a => a.id_album);
         if (ids.length === 0) {
@@ -28,7 +39,8 @@ router.get('/', autMiddleware, async (req, res) => {
                 title: 'Home',
                 usuario: usuario[0],
                 albumes: [],
-                tags
+                tags,
+                solicitudesRecibidas
             });
         }
 
@@ -47,14 +59,16 @@ router.get('/', autMiddleware, async (req, res) => {
                 .map(at => ({ id: at.id_tag, nombre: at.nombre }));
         });
 
+
+
         // Traer todos los tags para el formulario
         const [tags] = await db.query('SELECT * FROM tags');
-        console.log('Tags cuando hay álbumes:', tags);
         res.render('home', {
             title: 'Home',
             usuario: usuario[0],
             albumes,
-            tags
+            tags,
+            solicitudesRecibidas
         });
 
     } catch (error) {
@@ -64,7 +78,8 @@ router.get('/', autMiddleware, async (req, res) => {
             error: 'Error al obtener el usuario. Inténtalo de nuevo más tarde.',
             usuario: null,
             albumes: [],
-            tags: []
+            tags: [],
+            solicitudesRecibidas: []
         });
     }
 })

@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { initConnection } = require('../db/conection');
+const autMiddleware = require('../middleware/aut.middleware');
 
 
-router.get('/:alias', async (req, res) => {
+router.get('/:alias',[autMiddleware], async (req, res) => {
     try {
         const alias = req.params.alias;
         const db = await initConnection();
+        const mensaje = req.query.mensaje;
         
         const [usuarios] = await db.query('SELECT * FROM usuarios WHERE alias = ?', [alias]);
         if (!usuarios || usuarios.length === 0) {
@@ -16,15 +18,11 @@ router.get('/:alias', async (req, res) => {
 
         const [albumes] = await db.query('SELECT * FROM albumes WHERE id_usuario = ?', [usuario.id_usuario]);
 
-        // Si quieres agregar imágenes a cada álbum:
-        // for (let album of albumes) {
-        //     const [imagenes] = await db.query('SELECT * FROM imagenes WHERE id_album = ?', [album.id_album]);
-        //     album.imagenes = imagenes;
-        // }
 
         res.render('perfil', {
             usuario,
-            albumes
+            albumes,
+            mensaje
         });
 
     } catch (error) {

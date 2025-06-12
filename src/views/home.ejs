@@ -18,6 +18,12 @@
         <div class="bg-orange-200/40 backdrop-blur-sm rounded-3xl p-10 flex flex-col items-center gap-4 shadow-2xl border border-orange-300/60 w-80 ml-2">
             <img src="<%= usuario.imagen_perfil || '/default-profile.png' %>" alt="Imagen de perfil" class="w-40 h-40 rounded-full object-cover border-4 border-cyan-400 shadow-lg mb-4">
             <h2 class="text-3xl font-bold text-white text-center text-white"><%= usuario.nombre %></h2>
+            <div>
+                <button class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md">Seguidos</button>
+                <button id="abrirModalSolicitudes" class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md transition-all">
+                    Seguidores
+                </button>
+            </div>
             <p class="text-lg text-cyan-400 font-semibold text-center">@<%= usuario.alias %></p>
             <p class="text-lg text-cyan-400 font-semibold text-center">intereses: <%= usuario.antecedentes === null ? 'el usuario no tiene antecedentes' : usuario.antecedentes %></p>
         </div>
@@ -96,7 +102,44 @@
     </div>
 </div>
 
-<!-- scipt del modal -->
+<!-- Modal de solicitudes de amistad -->
+<div id="modalSolicitudes" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
+
+    <div class="bg-sky-950 rounded-2xl p-8 w-full max-w-lg shadow-2xl relative border-2 border-orange-800">
+        <button id="cerrarModalSolicitudes" type="button" class="absolute top-2 right-4 text-2xl text-gray-400 hover:text-red-500">&times;</button>
+
+        <h2 class="text-2xl font-bold mb-4 text-white">Seguidores</h2>
+
+        <div class="flex flex-col gap-4 max-h-96 overflow-y-auto">
+            <% if (solicitudesRecibidas && solicitudesRecibidas.length > 0) { %>
+                <% solicitudesRecibidas.forEach(function(sol) { %>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-cyan-100 shadow">
+                        <img src="<%= sol.imagen_perfil || '/default-user.jpg' %>" class="w-12 h-12 rounded-full border-2 border-cyan-400 object-cover" alt="perfil">
+                        <div class="flex-1">
+                            <div class="font-bold text-cyan-800">@<%= sol.alias %></div>
+                            <div class="text-xs text-gray-500">Enviado: <%= new Date(sol.fecha).toLocaleDateString() %></div>
+                        </div>
+                        <% if (sol.estado === 'pendiente') { %>
+                            <form action="/amistades/aceptar" method="POST">
+                                <input type="hidden" name="id_amistad" value="<%= sol.id_amistad %>">
+                                <button type="submit" class="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-400 hover:scale-105 duration-100 transform">Aceptar</button>
+                            </form>
+                        <% } else if(sol.estado === 'rechazada') { %>
+                            <span class="text-red-600 font-semibold">Rechazada</span>
+                        <% } else { %>
+                            <span class="text-green-600 font-semibold">Aceptada</span>
+                        <% } %>
+                            
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="text-gray-500 text-center">No tienes solicitudes de amistad.</div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- scipt del modal agregar album -->
 <script>
 document.getElementById('abrirModalAlbum').onclick = function(e) {
     e.preventDefault();
@@ -104,6 +147,17 @@ document.getElementById('abrirModalAlbum').onclick = function(e) {
 };
 document.getElementById('cerrarModalAlbum').onclick = function() {
     document.getElementById('modalAlbum').classList.add('hidden');
+};
+</script>
+
+<!-- Escript modal seguidores -->
+ <script>
+document.getElementById('abrirModalSolicitudes').onclick = function(e) {
+    e.preventDefault();
+    document.getElementById('modalSolicitudes').classList.remove('hidden');
+};
+document.getElementById('cerrarModalSolicitudes').onclick = function() {
+    document.getElementById('modalSolicitudes').classList.add('hidden');
 };
 </script>
 
