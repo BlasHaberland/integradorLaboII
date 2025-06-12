@@ -43,7 +43,9 @@ router.post('/solicitar', [autMiddleware], async (req, res) => {
 
         //EMITIR EVENTO DE SOCKET
         const socketId = usuariosConectados[id_destinatario];
+        console.log('SocketId destinatario:', socketId);
         if (socketId && req.app.get('io')) {
+            console.log('Emitiendo nuevaSolicitud a', id_destinatario, 'por socket', socketId);
             req.app.get('io').to(socketId).emit('nuevaSolicitud', {
                 de: id_remitente
             });

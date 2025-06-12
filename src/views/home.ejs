@@ -138,6 +138,19 @@
         </div>
     </div>
 </div>
+<%- include('partials/notificacion-popout') %>
+
+<!-- socket -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    window.socket = io(); // Crea una instancia global de socket
+    window.socket.on('connect', function() {
+        console.log('Socket realmente conectado:', window.socket.id);
+        window.socket.emit('usuarioConectado', '<%= usuario.id_usuario %>');
+    });
+</script>
+    
+ <script src="/js/popout.sokcet.js"></script>
 
 <!-- scipt del modal agregar album -->
 <script>
@@ -160,6 +173,9 @@ document.getElementById('cerrarModalSolicitudes').onclick = function() {
     document.getElementById('modalSolicitudes').classList.add('hidden');
 };
 </script>
+
+
+
 
 </body>
 </html>

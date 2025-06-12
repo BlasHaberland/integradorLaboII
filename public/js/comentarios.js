@@ -1,4 +1,4 @@
-const socket = io();
+const socket = window.socekt || io();
 
 document.getElementById('formComentario').addEventListener('submit', function (event) { 
     event.preventDefault();

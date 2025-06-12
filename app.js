@@ -50,7 +50,7 @@ const { Server } = require('socket.io');
 const io = new Server(server);
 const { socketServer } = require('./src/socket/socket-server');
 socketServer(io);
-
+app.set('io', io);
 // CONECCION
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
