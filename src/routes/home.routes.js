@@ -28,19 +28,27 @@ router.get('/', autMiddleware, async (req, res) => {
             ORDER BY a.fecha DESC
         `, [req.usuario.id]);
 
-        console.log('Solicitudes recibidas:', solicitudesRecibidas);
+        const [seguidosEnviados] = await db.query(
+            `SELECT a.id_amistad, u.alias, u.imagen_perfil, a.estado, a.fecha
+            FROM amistades a
+            JOIN usuarios u ON a.id_destinatario = u.id_usuario
+            WHERE a.id_remitente = ?`,
+            [req.usuario.id]
+        );
+        console.log('Seguidos enviados:', seguidosEnviados);
+
 
         // Traer tags asociados a los álbumes del usuario
         const ids = albumes.map(a => a.id_album);
         if (ids.length === 0) {
             const [tags] = await db.query('SELECT * FROM tags');
-            console.log('Tags cuando no hay álbumes:', tags);
             return res.render('home', {
                 title: 'Home',
                 usuario: usuario[0],
                 albumes: [],
                 tags,
-                solicitudesRecibidas
+                solicitudesRecibidas,
+                seguidosEnviados
             });
         }
 
@@ -59,16 +67,16 @@ router.get('/', autMiddleware, async (req, res) => {
                 .map(at => ({ id: at.id_tag, nombre: at.nombre }));
         });
 
-
-
         // Traer todos los tags para el formulario
         const [tags] = await db.query('SELECT * FROM tags');
+
         res.render('home', {
             title: 'Home',
             usuario: usuario[0],
             albumes,
             tags,
-            solicitudesRecibidas
+            solicitudesRecibidas,
+            seguidosEnviados
         });
 
     } catch (error) {
@@ -79,7 +87,8 @@ router.get('/', autMiddleware, async (req, res) => {
             usuario: null,
             albumes: [],
             tags: [],
-            solicitudesRecibidas: []
+            solicitudesRecibidas: [],
+            seguidosEnviados: []
         });
     }
 })

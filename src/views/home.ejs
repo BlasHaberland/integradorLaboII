@@ -19,7 +19,7 @@
             <img src="<%= usuario.imagen_perfil || '/default-profile.png' %>" alt="Imagen de perfil" class="w-40 h-40 rounded-full object-cover border-4 border-cyan-400 shadow-lg mb-4">
             <h2 class="text-3xl font-bold text-white text-center text-white"><%= usuario.nombre %></h2>
             <div>
-                <button class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md">Seguidos</button>
+                <button id="abrirModalSeguidos" class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md">Seguidos</button>
                 <button id="abrirModalSolicitudes" class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md transition-all">
                     Seguidores
                 </button>
@@ -139,6 +139,35 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de seguidos -->
+<div id="modalSeguidos" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
+    <div class="bg-sky-950 rounded-2xl p-8 w-full max-w-lg shadow-2xl relative border-2 border-orange-800">
+        <button id="cerrarModalSeguidos" type="button" class="absolute top-2 right-4 text-2xl text-gray-400 hover:text-red-500">&times;</button>
+        <h2 class="text-2xl font-bold mb-4 text-white">Seguidos</h2>
+        <div class="flex flex-col gap-4 max-h-96 overflow-y-auto">
+            <% if (seguidosEnviados && seguidosEnviados.length > 0) { %>
+                <% seguidosEnviados.forEach(function(seg) { %>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-cyan-100 shadow">
+                        <img src="<%= seg.imagen_perfil || '/default-user.jpg' %>" class="w-12 h-12 rounded-full border-2 border-cyan-400 object-cover" alt="perfil">
+                        <div class="flex-1">
+                            <div class="font-bold text-cyan-800">@<%= seg.alias %></div>
+                            <div class="text-xs text-gray-500">Enviado: <%= new Date(seg.fecha).toLocaleDateString() %></div>
+                        </div>
+                        <% if (seg.estado === 'pendiente') { %>
+                            <span class="text-yellow-600 font-semibold">Pendiente</span>
+                        <% } else if(seg.estado === 'aceptada') { %>
+                            <span class="text-green-600 font-semibold">Aceptada</span>
+                        <% } %>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="text-gray-500 text-center">No has enviado solicitudes de amistad.</div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
 <%- include('partials/notificacion-popout') %>
 
 <!-- socket -->
@@ -175,8 +204,16 @@ document.getElementById('cerrarModalSolicitudes').onclick = function() {
 };
 </script>
 
-
-
+<!-- Escripot modal de seguidos -->
+<script>
+document.getElementById('abrirModalSeguidos').onclick = function(e) {
+    e.preventDefault();
+    document.getElementById('modalSeguidos').classList.remove('hidden');
+};
+document.getElementById('cerrarModalSeguidos').onclick = function() {
+    document.getElementById('modalSeguidos').classList.add('hidden');
+};
+</script>
 
 </body>
 </html>
