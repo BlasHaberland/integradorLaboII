@@ -61,4 +61,29 @@ router.post('/solicitar', [autMiddleware], async (req, res) => {
     }
 })
 
+router.post('/actualizar', [autMiddleware], async (req, res) => {
+    try {
+        const { id_amistad, accion } = req.body;
+        const db = await initConnection();
+
+        if (accion === 'aceptar') {
+            await db.query(
+                'UPDATE amistades SET estado = "aceptada" WHERE id_amistad = ?',
+                [id_amistad]
+            );   
+        }else if(accion === 'rechazar') {
+            await db.query(
+                'DELETE FROM amistades WHERE id_amistad = ?',
+                [id_amistad]
+            );
+        }
+
+        res.redirect('/home');
+
+    } catch (error) {
+        console.error('Error al actualizar amistad:', error);
+        res.status(500).send('Error interno al actualizar la solicitud de amistad.');      
+    }
+})
+
 module.exports = router;

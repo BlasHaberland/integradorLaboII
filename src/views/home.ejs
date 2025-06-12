@@ -102,7 +102,7 @@
     </div>
 </div>
 
-<!-- Modal de solicitudes de amistad -->
+<!-- Modal de seguidores -->
 <div id="modalSolicitudes" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
 
     <div class="bg-sky-950 rounded-2xl p-8 w-full max-w-lg shadow-2xl relative border-2 border-orange-800">
@@ -120,9 +120,10 @@
                             <div class="text-xs text-gray-500">Enviado: <%= new Date(sol.fecha).toLocaleDateString() %></div>
                         </div>
                         <% if (sol.estado === 'pendiente') { %>
-                            <form action="/amistades/aceptar" method="POST">
+                            <form action="/amistades/actualizar" method="POST">
                                 <input type="hidden" name="id_amistad" value="<%= sol.id_amistad %>">
-                                <button type="submit" class="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-400 hover:scale-105 duration-100 transform">Aceptar</button>
+                                <button type="submit" name="accion" value="aceptar" class="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-400 hover:scale-105 duration-100 transform">Aceptar</button>
+                                <button type="submit" name="accion" value="rechazar" class="bg-rose-500 text-white px-3 py-1 rounded hover:bg-rose-400 hover:scale-105 duration-100 transform">rechazar</button>
                             </form>
                         <% } else if(sol.estado === 'rechazada') { %>
                             <span class="text-red-600 font-semibold">Rechazada</span>
