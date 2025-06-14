@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Perfil - Artesanos.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen" style="background-image: url('/fondo.png'); background-size: cover;">
+    <%- include('partials/navbar') %>
+
+    <div class="fixed inset-0 backdrop-blur-md bg-black/10 z-0"></div>
+
+    <div class="flex justify-center items-center my-20">
+        <div class="bg-orange-200/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-orange-300/60 w-full max-w-lg">
+            <h2 class="text-2xl font-bold mb-4 text-white">Editar perfil</h2>
+            <form action="/usuario/editar" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-white font-semibold mb-1">Nombre</label>
+                    <input type="text" name="nombre" value="<%= usuario.nombre %>" required class="border rounded-lg px-3 py-2 w-full">
+                </div>
+                <div>
+                    <label class="block text-white font-semibold mb-1">Apellido</label>
+                    <input type="text" name="apellido" value="<%= usuario.apellido %>" required class="border rounded-lg px-3 py-2 w-full">
+                </div>
+                <div>
+                    <label class="block text-white font-semibold mb-1">Alias</label>
+                    <input type="text" name="alias" value="<%= usuario.alias %>" required class="border rounded-lg px-3 py-2 w-full">
+                </div>
+                <div>
+                    <label class="block text-white font-semibold mb-1">Email</label>
+                    <input type="email" name="email" value="<%= usuario.email %>" required class="border rounded-lg px-3 py-2 w-full">
+                </div>
+                <div>
+                    <label class="block text-white font-semibold mb-1">Imagen de perfil</label>
+                    <input type="file" name="imagen_perfil" accept="image/*" class="border rounded-lg px-3 py-2 w-full">
+                    <% if (usuario.imagen_perfil) { %>
+                        <div class="flex justify-center mt-4" >
+                            <img src="<%= usuario.imagen_perfil %>" alt="Perfil" class="w-40 h-40 rounded-full border-4 border-cyan-400 shadow-lg">
+                        </div>
+                    <% } %>
+                </div>
+                <input type="hidden" name="imagen_perfil_actual" value="<%= usuario.imagen_perfil %>">  <!-- obtengo la imaggen actual -->
+                <div>
+                    <label class="block text-white font-semibold mb-1">Antecedentes</label>
+                    <textarea name="antecedentes" class="border rounded-lg px-3 py-2 w-full"><%= usuario.antecedentes %></textarea>
+                </div>
+                <div>
+                    <label class="block text-white font-semibold mb-1">Intereses</label>
+                    <input type="text" name="intereses" value="<%= usuario.intereses || '' %>" class="border rounded-lg px-3 py-2 w-full">
+                </div>
+                <div class="bg-cyan-800 p-4 rounded-lg shadow-lg">
+                    <label class="block text-white font-semibold mb-1">Portafolio público</label>
+                    <input type="checkbox" name="portafolio_publico" value="1" class="accent-cyan-500"
+                        <%= usuario.portafolio_publico === 1 ? 'checked' : '' %> >
+                    <span class="text-white ml-2">Mostrar mi portafolio a todos los usuarios</span>
+                </div>
+                <button type="submit" class="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 font-medium rounded-lg text-md px-5 py-2 mt-2 hover:scale-107 hover:shadow-md transition-all">Guardar cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <%- include('partials/icons') %>
+</body>
+</html>
