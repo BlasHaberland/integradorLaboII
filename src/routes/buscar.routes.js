@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { initConnection } = require('../db/conection');
+const autMiddleware = require('../middleware/aut.middleware');
 
 // BUSCAR USUARIO
 
-router.get('/', async (req, res) => {
+router.get('/',[autMiddleware], async (req, res) => {
     try {
         const db = await initConnection();
         const query = req.query.query?.trim();
@@ -21,7 +22,7 @@ router.get('/', async (req, res) => {
             return res.redirect(`/usuario/${usuarios[0].alias}`);
         }
 
-        res.render('no-encontrado', {query})
+        res.status(404).redirect(`/home?mensaje=No existe ningún usuario con el alias "${query}".`);
     } catch (error) {
         console.error('Error al buscar usuario:', error);
     }
