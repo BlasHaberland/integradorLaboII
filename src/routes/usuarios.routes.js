@@ -2,6 +2,57 @@ const express = require('express');
 const router = express.Router();
 const { initConnection } = require('../db/conection');
 const autMiddleware = require('../middleware/aut.middleware');
+const upload = require('../config/multer.config');
+
+//Editar perfil
+//obterner el usuario logueado
+router.get('/editar', [autMiddleware], async (req, res) => { 
+    try {
+        const usuarioId = req.usuario.id;
+        const db = await initConnection();
+
+        const [usuario] = await db.query('SELECT * FROM usuarios WHERE id_usuario = ?', [usuarioId]);
+        if (!usuario || usuario.length === 0) {
+            return res.status(404).render('no-encontrado', { query: usuarioId });
+        }
+
+        res.render('editar-usuario', {
+            usuario: usuario[0],
+        })
+
+    } catch (error) {
+        res.status(500).send('Error al cargar el perfil');
+    }
+})
+
+router.post('/editar', [autMiddleware, upload.single('imagen_perfil')], async (req, res) => { 
+    try {
+        const usuarioId = req.usuario.id;
+        const db = await initConnection();
+        const { nombre, apellido, alias, email,antecedentes, intereses, imagen_perfil_actual } = req.body
+        const portafolio_publico = req.body.portafolio_publico === "1" ? 1 : 0
+        
+        //verifica si se modifico la imagen de perfil
+        let imagen_perfil = imagen_perfil_actual
+        if (req.file) {
+            imagen_perfil = '/uploads/' + req.file.filename;
+        }
+
+        //actualizar el usuario
+        await db.query(
+            `UPDATE usuarios SET nombre=?, apellido=?, alias=?, email=?, antecedentes=?,intereses=?, portafolio_publico=?, imagen_perfil=? WHERE id_usuario=?`,
+            [nombre, apellido, alias, email, antecedentes,intereses, portafolio_publico, imagen_perfil, usuarioId]
+        );
+
+        res.redirect('/usuario/editar?mensaje=PerfilActualizado')
+
+    } catch (error) {
+        console.error('Error al editar el perfil:', error);
+        res.status(500).send('Error al editar el perfil');
+    }
+
+})
+
 
 
 router.get('/:alias',[autMiddleware], async (req, res) => {
