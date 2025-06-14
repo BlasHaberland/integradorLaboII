@@ -71,6 +71,9 @@ router.get('/:alias',[autMiddleware], async (req, res) => {
 
         // Verificar si hay amistad aceptada
         let amistadAceptada = false;
+        let amistadPendiente = false;
+        let solicitudEnviadaPorMi = false;
+
         if (usuario.id_usuario !== req.usuario.id) {
             const [amistad] = await db.query(`
                 SELECT * FROM amistades 
@@ -80,10 +83,17 @@ router.get('/:alias',[autMiddleware], async (req, res) => {
                         OR
                         (id_remitente = ? AND id_destinatario = ?)
                     )
-                    AND estado = 'aceptada'
                 LIMIT 1
             `, [req.usuario.id, usuario.id_usuario, usuario.id_usuario, req.usuario.id]);
-            amistadAceptada = amistad.length > 0;
+
+            if (amistad.length > 0) {
+                if (amistad[0].estado === 'aceptada') {
+                    amistadAceptada = true;
+                } else if (amistad[0].estado === 'pendiente') {
+                    amistadPendiente = true;
+                    solicitudEnviada = amistad[0].id_remitente === req.usuario.id;
+                }
+            }
         }
 
         // Mostrar álbumes si el perfil es público o hay amistad aceptada
@@ -96,7 +106,10 @@ router.get('/:alias',[autMiddleware], async (req, res) => {
             albumes,
             mensaje,
             usuarioLogueado: req.usuario,
-            puedeVerAlbumes: usuario.portafolio_publico === 1 || amistadAceptada || usuario.id_usuario === req.usuario.id
+            puedeVerAlbumes: usuario.portafolio_publico === 1 || amistadAceptada || usuario.id_usuario === req.usuario.id,
+            amistadAceptada,
+            amistadPendiente,
+            solicitudEnviada
         });
 
     } catch (error) {

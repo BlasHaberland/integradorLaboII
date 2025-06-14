@@ -35,10 +35,24 @@
 
             <!-- BOTO PARA SEGUIR -->
            <% if (typeof usuarioLogueado !== 'undefined' && usuarioLogueado.id !== usuario.id_usuario) { %>
-                <form action="/amistades/solicitar" method="POST">
-                    <input type="hidden" name="id_destinatario" value="<%= usuario.id_usuario %>">
-                    <button type="submit" class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md duration-100">Enviar solicitud de amistad</button>
-                </form>
+                <% if (amistadAceptada) { %>
+                    <form action="/amistades/cancelar" method="POST">
+                        <input type="hidden" name="id_destinatario" value="<%= usuario.id_usuario %>">
+                        <input type="hidden" name="alias" value="<%= usuario.alias %>">
+                        <button type="submit" class="bg-red-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-red-400 hover:scale-110 hover:shadow-md duration-100">Cancelar amistad</button>
+                    </form>
+                <% } else if (amistadPendiente) { %>
+                    <% if (solicitudEnviada) { %>
+                        <button class="bg-gray-400 p-2 m-1 rounded-lg text-white font-semibold cursor-not-allowed" disabled>Solicitud enviada</button>
+                    <% } else { %>
+                        <button class="bg-gray-400 p-2 m-1 rounded-lg text-white font-semibold cursor-not-allowed" disabled>Solicitud pendiente</button>
+                    <% } %>
+                <% } else { %>
+                    <form action="/amistades/solicitar" method="POST">
+                        <input type="hidden" name="id_destinatario" value="<%= usuario.id_usuario %>">
+                        <button type="submit" class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md duration-100">Enviar solicitud de amistad</button>
+                    </form>
+                <% } %>
             <% } %>   
 
         </div>

@@ -86,4 +86,25 @@ router.post('/actualizar', [autMiddleware], async (req, res) => {
     }
 })
 
+router.post('/cancelar', autMiddleware, async (req, res) => {
+    try {
+        const db = await initConnection();
+        const usuarioLogueadoId = req.usuario.id;
+        const id_destinatario = req.body.id_destinatario;
+
+        // Elimina la amistad en ambas direcciones
+        await db.query(
+            `DELETE FROM amistades 
+             WHERE (id_remitente = ? AND id_destinatario = ?)
+                OR (id_remitente = ? AND id_destinatario = ?)`,
+            [usuarioLogueadoId, id_destinatario, id_destinatario, usuarioLogueadoId]
+        );
+
+        res.redirect(`/usuario/${req.body.alias || ''}?mensaje=Amistad cancelada`);
+    } catch (error) {
+        console.error('Error al cancelar amistad:', error);
+        res.redirect('back');
+    }
+});
+
 module.exports = router;
