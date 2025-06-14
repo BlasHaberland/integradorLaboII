@@ -7,7 +7,8 @@
 </head>
 <body class="min-h-screen bg-black" style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
     <%- include('partials/navbar') %>
-        <%- include('partials/icons') %>
+    <%- include('partials/icons') %>
+
     <div class="fixed inset-0 backdrop-blur-md bg-black/10 z-0"></div>
 
     <div class="relative z-10 min-h-screen w-full py-16 pt-24 px-8">
@@ -107,29 +108,18 @@
             
     </div>
 
-    <!-- <iframe name="comentarioFrame" style="display:none;"></iframe> -->
     <script src="/js/album.js"></script>
     <script src=" /socket.io/socket.io.js"></script>
-
-    <!-- <script>
-        const socket = io();
-        socket.on('connect', () => {
-            console.log('Conectado a Socket.IO con id:', socket.id);
-            });
-        </script> -->
-
-        <script>    
+    <script>    
         window.usuarioActual={
             id_usuario: "<%= usuario.id %>",
             alias: "<%= usuario.alias %>",
             imagen_perfil: "<%= usuario.imagen_perfil %>"
         }
-        </script>
-
-        <script src="/js/comentarios.js"></script>
+    </script>
+    <script src="/js/comentarios.js"></script>
     
 </body>
 
 <!-- TODO: CREAR PARTIALS PARA EVITAR LA IDENTACION -->
-<!-- TODO: ARREGLAR BUG DE QUE DE CARGA DEL COMENTARIO SIN REFRESCAR LA PAGINA -->
 </html>

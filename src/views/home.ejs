@@ -76,110 +76,9 @@
             <% } %>
         </div>
     </div>
+    
 <%- include('partials/icons') %>
-
-<!-- modal para agregar album-->
-<div id="modalAlbum" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
-    <div class="bg-sky-950 rounded-2xl p-8 w-full max-w-md shadow-2xl relative border border-orange-800 border-2">
-
-        <button id="cerrarModalAlbum" type="button" class="absolute top-2 right-4 text-2xl text-gray-400 hover:text-red-500">&times;</button>
-        
-        <h2 class="text-2xl font-bold mb-4 text-white">Crear nuevo álbum</h2>
-
-        <form action="/albumes/nuevo" method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
-
-            <input type="text" name="titulo" placeholder="Título del álbum" required class="border rounded-lg px-3 py-2">
-            <textarea name="descripcion" placeholder="Descripción" class="border rounded-lg px-3 py-2"></textarea>
-
-            <label for="portada" class="text-2xl font-bold text-white mb-"> Escoje una portada para tu album </label>
-            <input type="file" name="portada" accept="image/*" class="mb-2" >
-            
-            <!-- tags -->
-            <div>
-                <label class="text-2xl font-bold text-white mb-2 block">Selecciona tags para tu álbum</label>
-                <div class="flex flex-wrap gap-2">
-                    <% tags.forEach(function(tag) { %>
-                        <label class="flex items-center gap-1 text-cyan-200 bg-cyan-900/40 px-2 py-1 rounded-lg cursor-pointer">
-                            <input type="checkbox" name="tags" value="<%= tag.id_tag %>" class="accent-cyan-500">
-                            <%= tag.nombre %>
-                        </label>
-                    <% }) %>
-                </div>
-            </div>
-
-            <button type="submit" class="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600   font-medium rounded-lg text-md px-5 py-2 text-center me-2 mb-2 hover:scale-107 hover:shadow-md transition-all">Crear álbum</button>
-
-        </form>
-
-    </div>
-</div>
-
-<!-- Modal de seguidores -->
-<div id="modalSolicitudes" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
-
-    <div class="bg-sky-950 rounded-2xl p-8 w-full max-w-lg shadow-2xl relative border-2 border-orange-800">
-        <button id="cerrarModalSolicitudes" type="button" class="absolute top-2 right-4 text-2xl text-gray-400 hover:text-red-500">&times;</button>
-
-        <h2 class="text-2xl font-bold mb-4 text-white">Seguidores</h2>
-
-        <div class="flex flex-col gap-4 max-h-96 overflow-y-auto">
-            <% if (solicitudesRecibidas && solicitudesRecibidas.length > 0) { %>
-                <% solicitudesRecibidas.forEach(function(sol) { %>
-                    <div class="flex items-center gap-4 p-3 rounded-lg bg-cyan-100 shadow">
-                        <img src="<%= sol.imagen_perfil || '/default-user.jpg' %>" class="w-12 h-12 rounded-full border-2 border-cyan-400 object-cover" alt="perfil">
-                        <div class="flex-1">
-                            <div class="font-bold text-cyan-800">@<%= sol.alias %></div>
-                            <div class="text-xs text-gray-500">Enviado: <%= new Date(sol.fecha).toLocaleDateString() %></div>
-                        </div>
-                        <% if (sol.estado === 'pendiente') { %>
-                            <form action="/amistades/actualizar" method="POST">
-                                <input type="hidden" name="id_amistad" value="<%= sol.id_amistad %>">
-                                <button type="submit" name="accion" value="aceptar" class="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-400 hover:scale-105 duration-100 transform">Aceptar</button>
-                                <button type="submit" name="accion" value="rechazar" class="bg-rose-500 text-white px-3 py-1 rounded hover:bg-rose-400 hover:scale-105 duration-100 transform">rechazar</button>
-                            </form>
-                        <% } else if(sol.estado === 'rechazada') { %>
-                            <span class="text-red-600 font-semibold">Rechazada</span>
-                        <% } else { %>
-                            <span class="text-green-600 font-semibold">Aceptada</span>
-                        <% } %>
-                            
-                    </div>
-                <% }) %>
-            <% } else { %>
-                <div class="text-gray-500 text-center">No tienes solicitudes de amistad.</div>
-            <% } %>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de seguidos -->
-<div id="modalSeguidos" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
-    <div class="bg-sky-950 rounded-2xl p-8 w-full max-w-lg shadow-2xl relative border-2 border-orange-800">
-        <button id="cerrarModalSeguidos" type="button" class="absolute top-2 right-4 text-2xl text-gray-400 hover:text-red-500">&times;</button>
-        <h2 class="text-2xl font-bold mb-4 text-white">Seguidos</h2>
-        <div class="flex flex-col gap-4 max-h-96 overflow-y-auto">
-            <% if (seguidosEnviados && seguidosEnviados.length > 0) { %>
-                <% seguidosEnviados.forEach(function(seg) { %>
-                    <div class="flex items-center gap-4 p-3 rounded-lg bg-cyan-100 shadow">
-                        <img src="<%= seg.imagen_perfil || '/default-user.jpg' %>" class="w-12 h-12 rounded-full border-2 border-cyan-400 object-cover" alt="perfil">
-                        <div class="flex-1">
-                            <div class="font-bold text-cyan-800">@<%= seg.alias %></div>
-                            <div class="text-xs text-gray-500">Enviado: <%= new Date(seg.fecha).toLocaleDateString() %></div>
-                        </div>
-                        <% if (seg.estado === 'pendiente') { %>
-                            <span class="text-yellow-600 font-semibold">Pendiente</span>
-                        <% } else if(seg.estado === 'aceptada') { %>
-                            <span class="text-green-600 font-semibold">Aceptada</span>
-                        <% } %>
-                    </div>
-                <% }) %>
-            <% } else { %>
-                <div class="text-gray-500 text-center">No has enviado solicitudes de amistad.</div>
-            <% } %>
-        </div>
-    </div>
-</div>
-
+<%- include('partials/modales-home') %>
 <%- include('partials/notificacion-popout') %>
 
 <!-- socket -->
@@ -191,41 +90,7 @@
         window.socket.emit('usuarioConectado', '<%= usuario.id_usuario %>');
     });
 </script>
-    
  <script src="/js/popout.sokcet.js"></script>
-
-<!-- scipt del modal agregar album -->
-<script>
-document.getElementById('abrirModalAlbum').onclick = function(e) {
-    e.preventDefault();
-    document.getElementById('modalAlbum').classList.remove('hidden');
-};
-document.getElementById('cerrarModalAlbum').onclick = function() {
-    document.getElementById('modalAlbum').classList.add('hidden');
-};
-</script>
-
-<!-- Escript modal seguidores -->
- <script>
-document.getElementById('abrirModalSolicitudes').onclick = function(e) {
-    e.preventDefault();
-    document.getElementById('modalSolicitudes').classList.remove('hidden');
-};
-document.getElementById('cerrarModalSolicitudes').onclick = function() {
-    document.getElementById('modalSolicitudes').classList.add('hidden');
-};
-</script>
-
-<!-- Escripot modal de seguidos -->
-<script>
-document.getElementById('abrirModalSeguidos').onclick = function(e) {
-    e.preventDefault();
-    document.getElementById('modalSeguidos').classList.remove('hidden');
-};
-document.getElementById('cerrarModalSeguidos').onclick = function() {
-    document.getElementById('modalSeguidos').classList.add('hidden');
-};
-</script>
 
 </body>
 </html>

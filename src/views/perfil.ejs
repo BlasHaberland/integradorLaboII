@@ -115,13 +115,13 @@
     </script>
 
     <script src="/socket.io/socket.io.js"></script>
-<script>
-window.socket = io();
-window.socket.on('connect', function() {
+    <script>
+    window.socket = io();
+    window.socket.on('connect', function() {
     window.socket.emit('usuarioConectado', '<%= usuarioLogueado.id %>');
-});
-</script>
-
-     <script src="/js/popout.sokcet.js"></script>
+    });
+    </script>
+    <script src="/js/popout.sokcet.js"></script>
+    
 </body>
 </html>
