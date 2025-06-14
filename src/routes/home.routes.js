@@ -7,6 +7,7 @@ router.get('/', autMiddleware, async (req, res) => {
     try {
         const db = await initConnection();
         const [usuario] = await db.query('SELECT * FROM usuarios WHERE id_usuario = ?', [req.usuario.id]);
+
         if (!usuario[0]) {
             return res.status(404).render('home', {
                 title: 'Home',
@@ -70,13 +71,15 @@ router.get('/', autMiddleware, async (req, res) => {
         // Traer todos los tags para el formulario
         const [tags] = await db.query('SELECT * FROM tags');
 
+        const mensaje = req.query.mensaje || null;
         res.render('home', {
             title: 'Home',
             usuario: usuario[0],
             albumes,
             tags,
             solicitudesRecibidas,
-            seguidosEnviados
+            seguidosEnviados,
+            mensaje
         });
 
     } catch (error) {
