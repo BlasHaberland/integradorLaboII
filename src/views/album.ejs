@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title><%= album.titulo %> - Artesanos.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-black" style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+    <%- include('partials/navbar') %>
+        <%- include('partials/icons') %>
+    <div class="fixed inset-0 backdrop-blur-md bg-black/10 z-0"></div>
+
+    <div class="relative z-10 min-h-screen w-full py-16 pt-24 px-8">
+
+        <div class="text-white mb-6">
+            <a href="/home" class="underline font-semibold">home</a> &gt; <span class="font-semibold"><%= album.titulo %></span>
+        </div>
+
+        <!-- Grid de imágenes -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 justify-items-center">
+            
+            <div>
+                <!-- Botón de agregar imagen  -->
+                 <% if (usuarioLogueado && usuarioLogueado.id === album.id_usuario) { %>
+                <button id="abrirModalImagen" class="w-64 h-40 flex flex-col items-center justify-center border-2 border-cyan-400 rounded-lg bg-cyan-900/40 hover:bg-cyan-700/60 transition-all text-white text-6xl font-bold mb-2">
+                    +
+                </button>
+                <div class="text-center text-white"> agregar imagen</div>
+                <% } %>
+
+            </div>
+
+            <!-- Imágenes del álbum -->
+            <% if (imagenes && imagenes.length > 0) { %>
+                <% imagenes.forEach(function(img) { %>
+                    <div class="w-64 h-40 rounded-lg overflow-hidden border-2 border-cyan-400 bg-cyan-900/60 shadow-lg flex flex-col items-center hover:scale-105 transition-all cursor-pointer">
+                        <img 
+                            src="<%= img.url %>" 
+                            alt="<%= img.titulo || 'Imagen' %>" 
+                            class="object-cover w-full h-32 cursor-pointer imagen-album"
+                            data-url="<%= img.url %>"
+                            data-titulo="<%= img.titulo || 'Sin título' %>"
+                            data-descripcion="<%= img.descripcion || '' %>"
+                            data-id="<%= img.id_imagen %>"
+                        >
+                        <div class="text-white text-xs mt-1 px-2 truncate w-full text-center"><%= img.titulo || 'Sin título' %></div>
+
+                        <!-- Comentarios ocultos para el modal -->
+                        <div id="comentarios-img-<%= img.id_imagen %>" class="hidden">
+                            <% if (img.comentarios && img.comentarios.length > 0) { %>
+                                <% img.comentarios.forEach(function(com) { %>
+                                    <div class="flex gap-2 items-start mb-2">
+                                        <img src="<%= com.imagen_perfil === 'default-user.jpg' ? '/default-user.jpg' : com.imagen_perfil %>" class="w-8 h-8 rounded-full object-cover">
+                                        <div>
+                                            <div class="font-semibold text-cyan-200 text-sm"><%= com.alias %></div>
+                                            <div class="text-white text-sm"><%= com.texto %></div>
+                                            <div class="text-xs text-cyan-400"><%= com.creado_en.toLocaleString() %></div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="text-cyan-300 text-sm">Sin comentarios aún.</div>
+                            <% } %>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+
+    </div>
+
+    <!-- Modal para ver imagen -->
+    <div id="modalVerImagen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 hidden">
+        <div class="relative bg-sky-950 rounded-2xl shadow-2xl p-4 max-w-2xl w-full flex flex-col items-center border border-orange-800 border-2">
+            <button id="cerrarModalVerImagen" type="button" class="absolute top-2 right-4 text-3xl text-gray-400 hover:text-red-500">&times;</button>
+            <img id="imagenModalSrc" src="" alt="Imagen ampliada" class="max-h-[70vh] rounded-lg mb-4 shadow-lg">
+            <div id="tituloModal" class="text-white text-lg font-bold mb-2"></div>
+            <div id="descripcionModal" class="text-cyan-200 text-sm"></div>
+            
+            <!-- comentario -->
+            <form id="formComentario" class="w-full mt-4 flex gap-2">
+                <input type="hidden" name="id_imagen" id="inputIdImagen">
+                <input type="text" name="texto" id="comentario" class="flex-1 rounded px-2 py-1" placeholder="Escribe un comentario..." required>
+                <button type="submit" class="bg-cyan-600 text-white px-3 rounded">Comentar</button>
+            </form>
+
+            <div id="comentariosModal" class="w-full mt-4 max-h-48 overflow-y-auto space-y-2"></div>
+        </div>
+    </div>
+
+    <!-- Modal para subir imagen -->
+    <div id="modalImagen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
+        <div class="bg-sky-950 rounded-2xl p-8 w-full max-w-md shadow-2xl relative border border-orange-800 border-2">
+        
+            <button id="cerrarModalImagen" type="button" class="absolute top-2 right-4 text-2xl text-gray-400 hover:text-red-500">&times;</button>
+
+            <h2 class="text-2xl font-bold mb-4 text-white">Agregar imagen al álbum</h2>
+
+            <form action="/albumes/<%= album.id_album %>/imagenes/nueva" method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
+
+                <input type="text" name="titulo" placeholder="Título de la imagen" class="border rounded-lg px-3 py-2">
+                <textarea name="descripcion" placeholder="Descripción" class="border rounded-lg px-3 py-2"></textarea>
+                <input type="file" name="imagen" accept="image/*" required class="mb-2">
+                <button type="submit" class="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 font-medium rounded-lg text-md px-5 py-2 text-center mb-2 hover:scale-107 hover:shadow-md transition-all">Subir imagen</button>
+
+            </form>
+            
+    </div>
+
+    <!-- <iframe name="comentarioFrame" style="display:none;"></iframe> -->
+    <script src="/js/album.js"></script>
+    <script src=" /socket.io/socket.io.js"></script>
+
+    <!-- <script>
+        const socket = io();
+        socket.on('connect', () => {
+            console.log('Conectado a Socket.IO con id:', socket.id);
+            });
+        </script> -->
+
+        <script>    
+        window.usuarioActual={
+            id_usuario: "<%= usuario.id %>",
+            alias: "<%= usuario.alias %>",
+            imagen_perfil: "<%= usuario.imagen_perfil %>"
+        }
+        </script>
+
+        <script src="/js/comentarios.js"></script>
+    
+</body>
+
+<!-- TODO: CREAR PARTIALS PARA EVITAR LA IDENTACION -->
+<!-- TODO: ARREGLAR BUG DE QUE DE CARGA DEL COMENTARIO SIN REFRESCAR LA PAGINA -->
+</html>

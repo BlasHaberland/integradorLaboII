@@ -1,13 +1,29 @@
 <nav class="w-full flex items-center justify-between px-8 py-4 bg-black/40 border-b border-white/30 fixed top-0 left-0 z-20 backdrop-blur-md">
 
+    <!-- Botón Home a la izquierda -->
+    <div class="flex-none">
+        <a href="/home" class="flex items-center px-4 py-2 rounded border border-white/40 text-white bg-black/30 hover:bg-orange-400 hover:text-black transition">
+            <svg width="24" height="24" class="mr-2">
+                <use href="#home"></use>
+            </svg>
+            Home
+        </a>
+    </div>
+
     <div class="flex-1 flex justify-center">
         <div class="relative w-96">
-            <input type="text" placeholder="Buscar..." class="w-full px-4 py-2 rounded-lg border border-white/40 bg-black/30 text-white placeholder:text-white/60 focus:outline-none pr-10" />
- 
+            <form id="form-busqueda" action="/buscar" method="GET">
+                <input 
+                    type="text" 
+                    name="query" 
+                    placeholder="Buscar usuarios, álbumes o etiquetas..." 
+                    class="w-full px-4 py-2 rounded-lg border border-white/40 bg-black/30 text-white placeholder:text-white/60 focus:outline-none pr-10" 
+                    required
+                />
+            </form>
             <svg id="icono-ojo" width="24" height="24" class="absolute right-3 top-1/2 -translate-y-1/2 text-white pointer-events-none transition-all duration-200">
                 <use href="#ojo-cerrado"></use>
             </svg>
-
         </div>
     </div>
 
@@ -18,10 +34,8 @@
     </div>
 </nav>
 
-
-<!-- script para mostrar el ojo con movimiento en la barra de busqueda -->
 <script>
-    const input = document.querySelector('input[type="text"]');
+    const input = document.querySelector('input[name="query"]');
     const icono = document.getElementById('icono-ojo');
 
     function actualizarIcono() {

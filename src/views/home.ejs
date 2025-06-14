@@ -18,6 +18,12 @@
         <div class="bg-orange-200/40 backdrop-blur-sm rounded-3xl p-10 flex flex-col items-center gap-4 shadow-2xl border border-orange-300/60 w-80 ml-2">
             <img src="<%= usuario.imagen_perfil || '/default-profile.png' %>" alt="Imagen de perfil" class="w-40 h-40 rounded-full object-cover border-4 border-cyan-400 shadow-lg mb-4">
             <h2 class="text-3xl font-bold text-white text-center text-white"><%= usuario.nombre %></h2>
+            <div>
+                <button id="abrirModalSeguidos" class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md">Seguidos</button>
+                <button id="abrirModalSolicitudes" class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md transition-all">
+                    Seguidores
+                </button>
+            </div>
             <p class="text-lg text-cyan-400 font-semibold text-center">@<%= usuario.alias %></p>
             <p class="text-lg text-cyan-400 font-semibold text-center">intereses: <%= usuario.antecedentes === null ? 'el usuario no tiene antecedentes' : usuario.antecedentes %></p>
         </div>
@@ -28,7 +34,7 @@
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-white flex items-center gap-2">
                     Tus álbumes
-                    <a href="#" id="abrirModalAlbum" class="text-white py-1 rounded-xl hover:scale-105 transition-all flex items-center" title="Agregar álbum">
+                    <a href="#" id="abrirModalAlbum" class=" text-white py-1 rounded-xl hover:scale-110 transition-all flex items-center" title="Agregar álbum">
                         <svg width="24" height="24" class="inline-block"><use href="#add"></use></svg>
                     </a>
                 </h3>
@@ -37,22 +43,20 @@
             <% if (albumes && albumes.length > 0) { %>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <% albumes.forEach(function(album) { %>
-                        <div class="bg-cyan-800/90 rounded-xl shadow-lg p-4 flex flex-col items-center transition-transform duration-100 will-change-transform cursor-pointer hover:scale-105 hover:shadow-md hover:bg-cyan-500/90 hover:border-2 hover:border-orange-400">
-                            
-                            <img src="<%= album.portada || '/default-album.jpg' %>" alt="Portada álbum" class= "w-52 h-32 object-cover rounded-lg mb-3 ">
-                            <div class="text-lg font-semibold text-cyan-100 text-center"><%= album.titulo %></div>
-                            <div class="text-sm text-white text-center"><%= album.descripcion ? album.descripcion : 
-                            'Sin descripción' %></div>
-
-                            <div class="flex flex-wrap gap-1 justify-center mt-2">
-                                <% if (album.tags && album.tags.length > 0) { %>
-                                    <% album.tags.forEach(function(tag) { %>
-                                        <span class="bg-cyan-900/60 text-cyan-200 px-2 py-0.5 rounded text-xs"><%= tag.nombre %></span>
-                                    <% }) %>
-                                <% } %>
+                        <a href="/albumes/<%= album.id_album %>" class="block">
+                            <div class="bg-cyan-800/90 rounded-xl shadow-lg p-4 flex flex-col items-center transition-transform duration-100 will-change-transform cursor-pointer hover:scale-105 hover:shadow-md hover:bg-cyan-500/90 hover:border-2 hover:border-orange-400">
+                                <img src="<%= album.portada || '/default-album.jpg' %>" alt="Portada álbum" class="w-52 h-32 object-cover rounded-lg mb-3 ">
+                                <div class="text-lg font-semibold text-cyan-100 text-center"><%= album.titulo %></div>
+                                <div class="text-sm text-white text-center"><%= album.descripcion ? album.descripcion : 'Sin descripción' %></div>
+                                <div class="flex flex-wrap gap-1 justify-center mt-2">
+                                    <% if (album.tags && album.tags.length > 0) { %>
+                                        <% album.tags.forEach(function(tag) { %>
+                                            <span class="bg-cyan-900/60 text-cyan-200 px-2 py-0.5 rounded text-xs"><%= tag.nombre %></span>
+                                        <% }) %>
+                                    <% } %>
+                                </div>
                             </div>
-
-                        </div>
+                        </a>
                     <% }) %>
                 </div>
             <% } else { %>
@@ -78,7 +82,7 @@
             <label for="portada" class="text-2xl font-bold text-white mb-"> Escoje una portada para tu album </label>
             <input type="file" name="portada" accept="image/*" class="mb-2" >
             
-            <!-- Mostrar tags como checkboxes -->
+            <!-- tags -->
             <div>
                 <label class="text-2xl font-bold text-white mb-2 block">Selecciona tags para tu álbum</label>
                 <div class="flex flex-wrap gap-2">
@@ -98,7 +102,87 @@
     </div>
 </div>
 
-<!-- scipt del modal -->
+<!-- Modal de seguidores -->
+<div id="modalSolicitudes" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
+
+    <div class="bg-sky-950 rounded-2xl p-8 w-full max-w-lg shadow-2xl relative border-2 border-orange-800">
+        <button id="cerrarModalSolicitudes" type="button" class="absolute top-2 right-4 text-2xl text-gray-400 hover:text-red-500">&times;</button>
+
+        <h2 class="text-2xl font-bold mb-4 text-white">Seguidores</h2>
+
+        <div class="flex flex-col gap-4 max-h-96 overflow-y-auto">
+            <% if (solicitudesRecibidas && solicitudesRecibidas.length > 0) { %>
+                <% solicitudesRecibidas.forEach(function(sol) { %>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-cyan-100 shadow">
+                        <img src="<%= sol.imagen_perfil || '/default-user.jpg' %>" class="w-12 h-12 rounded-full border-2 border-cyan-400 object-cover" alt="perfil">
+                        <div class="flex-1">
+                            <div class="font-bold text-cyan-800">@<%= sol.alias %></div>
+                            <div class="text-xs text-gray-500">Enviado: <%= new Date(sol.fecha).toLocaleDateString() %></div>
+                        </div>
+                        <% if (sol.estado === 'pendiente') { %>
+                            <form action="/amistades/actualizar" method="POST">
+                                <input type="hidden" name="id_amistad" value="<%= sol.id_amistad %>">
+                                <button type="submit" name="accion" value="aceptar" class="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-400 hover:scale-105 duration-100 transform">Aceptar</button>
+                                <button type="submit" name="accion" value="rechazar" class="bg-rose-500 text-white px-3 py-1 rounded hover:bg-rose-400 hover:scale-105 duration-100 transform">rechazar</button>
+                            </form>
+                        <% } else if(sol.estado === 'rechazada') { %>
+                            <span class="text-red-600 font-semibold">Rechazada</span>
+                        <% } else { %>
+                            <span class="text-green-600 font-semibold">Aceptada</span>
+                        <% } %>
+                            
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="text-gray-500 text-center">No tienes solicitudes de amistad.</div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de seguidos -->
+<div id="modalSeguidos" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
+    <div class="bg-sky-950 rounded-2xl p-8 w-full max-w-lg shadow-2xl relative border-2 border-orange-800">
+        <button id="cerrarModalSeguidos" type="button" class="absolute top-2 right-4 text-2xl text-gray-400 hover:text-red-500">&times;</button>
+        <h2 class="text-2xl font-bold mb-4 text-white">Seguidos</h2>
+        <div class="flex flex-col gap-4 max-h-96 overflow-y-auto">
+            <% if (seguidosEnviados && seguidosEnviados.length > 0) { %>
+                <% seguidosEnviados.forEach(function(seg) { %>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-cyan-100 shadow">
+                        <img src="<%= seg.imagen_perfil || '/default-user.jpg' %>" class="w-12 h-12 rounded-full border-2 border-cyan-400 object-cover" alt="perfil">
+                        <div class="flex-1">
+                            <div class="font-bold text-cyan-800">@<%= seg.alias %></div>
+                            <div class="text-xs text-gray-500">Enviado: <%= new Date(seg.fecha).toLocaleDateString() %></div>
+                        </div>
+                        <% if (seg.estado === 'pendiente') { %>
+                            <span class="text-yellow-600 font-semibold">Pendiente</span>
+                        <% } else if(seg.estado === 'aceptada') { %>
+                            <span class="text-green-600 font-semibold">Aceptada</span>
+                        <% } %>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="text-gray-500 text-center">No has enviado solicitudes de amistad.</div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/notificacion-popout') %>
+
+<!-- socket -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    window.socket = io(); // Crea una instancia global de socket
+    window.socket.on('connect', function() {
+        console.log('Socket realmente conectado:', window.socket.id);
+        window.socket.emit('usuarioConectado', '<%= usuario.id_usuario %>');
+    });
+</script>
+    
+ <script src="/js/popout.sokcet.js"></script>
+
+<!-- scipt del modal agregar album -->
 <script>
 document.getElementById('abrirModalAlbum').onclick = function(e) {
     e.preventDefault();
@@ -108,5 +192,28 @@ document.getElementById('cerrarModalAlbum').onclick = function() {
     document.getElementById('modalAlbum').classList.add('hidden');
 };
 </script>
+
+<!-- Escript modal seguidores -->
+ <script>
+document.getElementById('abrirModalSolicitudes').onclick = function(e) {
+    e.preventDefault();
+    document.getElementById('modalSolicitudes').classList.remove('hidden');
+};
+document.getElementById('cerrarModalSolicitudes').onclick = function() {
+    document.getElementById('modalSolicitudes').classList.add('hidden');
+};
+</script>
+
+<!-- Escripot modal de seguidos -->
+<script>
+document.getElementById('abrirModalSeguidos').onclick = function(e) {
+    e.preventDefault();
+    document.getElementById('modalSeguidos').classList.remove('hidden');
+};
+document.getElementById('cerrarModalSeguidos').onclick = function() {
+    document.getElementById('modalSeguidos').classList.add('hidden');
+};
+</script>
+
 </body>
 </html>

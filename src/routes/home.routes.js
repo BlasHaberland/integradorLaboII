@@ -17,16 +17,48 @@ router.get('/', autMiddleware, async (req, res) => {
             });
         }
 
-        // Traer álbumes del usuario
         const [albumes] = await db.query('SELECT * FROM albumes WHERE id_usuario = ?', [req.usuario.id]);
 
+        // Traer solicitudes de amistad recibidas
+        const [solicitudesRecibidas] = await db.query(`
+            SELECT a.*, u.alias, u.imagen_perfil
+            FROM amistades a
+            JOIN usuarios u ON a.id_remitente = u.id_usuario
+            WHERE a.id_destinatario = ?
+            ORDER BY a.fecha DESC
+        `, [req.usuario.id]);
+
+        const [seguidosEnviados] = await db.query(
+            `SELECT a.id_amistad, u.alias, u.imagen_perfil, a.estado, a.fecha
+            FROM amistades a
+            JOIN usuarios u ON a.id_destinatario = u.id_usuario
+            WHERE a.id_remitente = ?`,
+            [req.usuario.id]
+        );
+        console.log('Seguidos enviados:', seguidosEnviados);
+
+
         // Traer tags asociados a los álbumes del usuario
-        const [albumesTags] = await db.query(`
-            SELECT at.id_album, t.id_tag, t.nombre
-            FROM albumes_tags at
-            JOIN tags t ON at.id_tag = t.id_tag
-            WHERE at.id_album IN (?)
-        `, [albumes.map(a => a.id_album)]);
+        const ids = albumes.map(a => a.id_album);
+        if (ids.length === 0) {
+            const [tags] = await db.query('SELECT * FROM tags');
+            return res.render('home', {
+                title: 'Home',
+                usuario: usuario[0],
+                albumes: [],
+                tags,
+                solicitudesRecibidas,
+                seguidosEnviados
+            });
+        }
+
+        const [albumesTags] = await db.query(
+            `SELECT at.id_album, t.id_tag, t.nombre
+             FROM albumes_tags at
+             JOIN tags t ON at.id_tag = t.id_tag
+             WHERE at.id_album IN (${ids.map(() => '?').join(',')})`,
+            ids
+        );
 
         // Asignar los tags a cada álbum
         albumes.forEach(album => {
@@ -42,7 +74,9 @@ router.get('/', autMiddleware, async (req, res) => {
             title: 'Home',
             usuario: usuario[0],
             albumes,
-            tags
+            tags,
+            solicitudesRecibidas,
+            seguidosEnviados
         });
 
     } catch (error) {
@@ -52,7 +86,9 @@ router.get('/', autMiddleware, async (req, res) => {
             error: 'Error al obtener el usuario. Inténtalo de nuevo más tarde.',
             usuario: null,
             albumes: [],
-            tags: []
+            tags: [],
+            solicitudesRecibidas: [],
+            seguidosEnviados: []
         });
     }
 })
