@@ -77,21 +77,16 @@ router.get('/:alias',[autMiddleware], async (req, res) => {
         if (usuario.id_usuario !== req.usuario.id) {
             const [amistad] = await db.query(`
                 SELECT * FROM amistades 
-                WHERE 
-                    (
-                        (id_remitente = ? AND id_destinatario = ?)
-                        OR
-                        (id_remitente = ? AND id_destinatario = ?)
-                    )
-                LIMIT 1
-            `, [req.usuario.id, usuario.id_usuario, usuario.id_usuario, req.usuario.id]);
+                WHERE id_remitente = ? AND id_destinatario = ?
+
+            `, [req.usuario.id, usuario.id_usuario]);
 
             if (amistad.length > 0) {
                 if (amistad[0].estado === 'aceptada') {
                     amistadAceptada = true;
                 } else if (amistad[0].estado === 'pendiente') {
                     amistadPendiente = true;
-                    solicitudEnviada = amistad[0].id_remitente === req.usuario.id;
+                    solicitudEnviadaPorMi = amistad[0].id_remitente === req.usuario.id;
                 }
             }
         }
@@ -109,7 +104,7 @@ router.get('/:alias',[autMiddleware], async (req, res) => {
             puedeVerAlbumes: usuario.portafolio_publico === 1 || amistadAceptada || usuario.id_usuario === req.usuario.id,
             amistadAceptada,
             amistadPendiente,
-            solicitudEnviada
+            solicitudEnviadaPorMi
         });
 
     } catch (error) {

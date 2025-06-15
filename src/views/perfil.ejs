@@ -43,7 +43,7 @@
                         <button type="submit" class="bg-red-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-red-400 hover:scale-110 hover:shadow-md duration-100">Cancelar amistad</button>
                     </form>
                 <% } else if (amistadPendiente) { %>
-                    <% if (solicitudEnviada) { %>
+                    <% if (solicitudEnviadaPorMi) { %>
                         <button class="bg-gray-400 p-2 m-1 rounded-lg text-white font-semibold cursor-not-allowed" disabled>Solicitud enviada</button>
                     <% } else { %>
                         <button class="bg-gray-400 p-2 m-1 rounded-lg text-white font-semibold cursor-not-allowed" disabled>Solicitud pendiente</button>
