@@ -68,7 +68,7 @@ router.post('/actualizar', [autMiddleware], async (req, res) => {
 
         if (accion === 'aceptar') {
             await db.query(
-                'UPDATE amistades SET estado = `aceptada` WHERE id_amistad = ?',
+                "UPDATE amistades SET estado = 'aceptada' WHERE id_amistad = ?",
                 [id_amistad]
             );   
         }else if(accion === 'rechazar') {
