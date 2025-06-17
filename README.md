@@ -65,3 +65,8 @@ npm run dev
 - MySQL
 - dotenv
 - mysql2
+
+
+> [!NOTE]
+> Para desplegar la web se utiliza Vercel que es un entorno efimero, es decir que las imagenes que se suban en produccion al reiniciar el servidor ya no se podran ver.
+> Habria que usar un servicio de terceros para poder subir imagenes ej: amazon(S3), cloudinary, u otro.
