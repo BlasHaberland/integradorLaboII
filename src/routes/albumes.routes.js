@@ -16,7 +16,7 @@ router.post('/nuevo',[autMiddleware,upload.single('portada'),albumFormMiddleware
         const { titulo, descripcion, tags } = req.body;
         const portada = req.file ? '/uploads/' + req.file.filename : '/default-album.jpg';
 
-        const [album] = await db.query('INSERT INTO albumes (id_usuario,titulo,descripcion,portada) VALUES (?,?,?,?)', [id_usuario, titulo, descripcion, portada]);
+        const [album] = await db.query("INSERT INTO albumes (id_usuario,titulo,descripcion,portada) VALUES (?,?,?,?)", [id_usuario, titulo, descripcion, portada]);
         const albumId = album.insertId;
 
         if (tags) {
@@ -27,7 +27,7 @@ router.post('/nuevo',[autMiddleware,upload.single('portada'),albumFormMiddleware
             // Filtrar tags vacíos o nulos
             tagsArray = tagsArray.filter(tagId => tagId && tagId !== '');
             for (const tagId of tagsArray) {
-                await db.query('INSERT INTO albumes_tags (id_album, id_tag) VALUES (?, ?)', [albumId, tagId]);
+                await db.query("INSERT INTO albumes_tags (id_album, id_tag) VALUES (?, ?)", [albumId, tagId]);
             }
         }
         
@@ -53,21 +53,17 @@ router.get('/:id', [autMiddleware], async (req, res) => {
         const db = await initConnection();  
 
         // Obtener datos del álbum
-        const [albumRows] = await db.query('SELECT * FROM albumes WHERE id_album = ?', [id_album]);
+        const [albumRows] = await db.query("SELECT * FROM albumes WHERE id_album = ?", [id_album]);
         if (albumRows.length === 0) return res.status(404).send('Álbum no encontrado');
         const album = albumRows[0];
 
 
-        const [imagenes] = await db.query('SELECT * FROM imagenes WHERE id_album = ?', [id_album]);
+        const [imagenes] = await db.query("SELECT * FROM imagenes WHERE id_album = ?", [id_album]);
 
 
         for (let img of imagenes) {
             const [comentarios] = await db.query(
-                `SELECT c.texto, c.creado_en, u.alias, u.imagen_perfil
-                 FROM comentarios c
-                 JOIN usuarios u ON c.id_usuario = u.id_usuario
-                 WHERE c.id_imagen = ?
-                 ORDER BY c.creado_en ASC`, [img.id_imagen]
+                "SELECT c.texto, c.creado_en, u.alias, u.imagen_perfil FROM comentarios c JOIN usuarios u ON c.id_usuario = u.id_usuario WHERE c.id_imagen = ? ORDER BY c.creado_en ASC", [img.id_imagen]
             );
             img.comentarios = comentarios; // Array de comentarios para esa imagen
             img.url = img.ruta || img.url; 
@@ -96,7 +92,7 @@ router.post('/:id/imagenes/nueva', [autMiddleware, upload.single('imagen')],imag
         }
 
         const url = '/uploads/' + req.file.filename;
-        await db.query('INSERT INTO imagenes (id_album, titulo, descripcion, url) VALUES (?, ?, ?, ?)',
+        await db.query("INSERT INTO imagenes (id_album, titulo, descripcion, url) VALUES (?, ?, ?, ?)",
             [id_album, titulo, descripcion, url]
         )
         res.redirect(`/albumes/${id_album}`);
