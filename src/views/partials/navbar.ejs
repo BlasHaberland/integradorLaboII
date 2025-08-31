@@ -16,10 +16,13 @@
                 <input 
                     type="text" 
                     name="query" 
+                    id="barra-busqueda"
                     placeholder="Buscar usuarios, álbumes o etiquetas..." 
                     class="w-full px-4 py-2 rounded-lg border border-white/40 bg-black/30 text-white placeholder:text-white/60 focus:outline-none pr-10" 
+                    autocomplete="off"
                     required
                 />
+                <div id="resultados-busqueda" class="absolute left-0 right-0 mt-1 bg-white rounded shadow z-50 text-black max-h-60 overflow-y-auto"></div>
             </form>
             <svg id="icono-ojo" width="24" height="24" class="absolute right-3 top-1/2 -translate-y-1/2 text-white pointer-events-none transition-all duration-200">
                 <use href="#ojo-cerrado"></use>
