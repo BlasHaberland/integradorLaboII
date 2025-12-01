@@ -12,13 +12,14 @@ const socketServer = (io) => {
         });
 
         // Aquí solo registras los listeners una vez por conexión
-        comentarioSocket(socket, io);
+        comentarioSocket(socket, io, usuariosConectados);
 
         socket.on('disconnect', () => {
             console.log('Usuario desconectado:', socket.id);
 
             for (const [id, sid] of Object.entries(usuariosConectados)) {
                 if (sid === socket.id) delete usuariosConectados[id];
+                break;
             }
 
         });

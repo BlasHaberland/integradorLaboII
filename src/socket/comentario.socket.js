@@ -1,13 +1,14 @@
 const { initConnection } = require('../db/conection');
 
 //COMENTAR IMAGENES
-function comentarioSocket(socket, io) { 
+function comentarioSocket(socket, io,usuariosConectados) { 
     socket.on('nuevo-comentario', async (data) => {
         console.log('Evento nuevo-comentario recibido:', data);
         
         try {
             const db = await initConnection();
             console.log('id usuario:', data.id_usuario);
+
             const [usuario] = await db.query(
                 'SELECT alias, imagen_perfil FROM usuarios WHERE id_usuario = ?', 
                 [data.id_usuario]
@@ -48,28 +49,33 @@ function comentarioSocket(socket, io) {
             //Enviar notificacion
               if (imagenData.length > 0 && imagenData[0].propietario_id !== data.id_usuario) {
                 const propietarioId = imagenData[0].propietario_id;
+                const socketId = usuariosConectados[propietarioId]; // ← Usar tu sistema
                 
-                console.log('Enviando notificación de comentario a usuario:', propietarioId);
+                console.log('Enviando notificación de comentario a usuario:', propietarioId, 'socket:', socketId);
+                console.log('Usuarios conectados actualmente:', usuariosConectados);
                 
-                // Crear extracto del comentario
-                const extractoComentario = data.texto.length > 50 
-                    ? data.texto.substring(0, 50) + '...' 
-                    : data.texto;
+                if (socketId) {
+                    // Crear extracto del comentario
+                    const extractoComentario = data.texto.length > 50 
+                        ? data.texto.substring(0, 50) + '...' 
+                        : data.texto;
 
-                // Usar salas en lugar de usuariosConectados
-                io.to(`usuario_${propietarioId}`).emit('nuevoComentario', {
-                    autor: usuario[0].alias,
-                    contenido: data.texto,
-                    extracto: extractoComentario,
-                    imagen_autor: (() => {
-                        const img = usuario[0].imagen_perfil;
-                        if (!img || img === 'default-user.jpg') return '/default-user.jpg';
-                        if (img.startsWith('/uploads/')) return img;
-                        return '/uploads/' + img.replace(/^\/+/, '');
-                    })()
-                });
+                    io.to(socketId).emit('nuevoComentario', {
+                        autor: usuario[0].alias,
+                        contenido: data.texto,
+                        extracto: extractoComentario,
+                        imagen_autor: (() => {
+                            const img = usuario[0].imagen_perfil;
+                            if (!img || img === 'default-user.jpg') return '/default-user.jpg';
+                            if (img.startsWith('/uploads/')) return img;
+                            return '/uploads/' + img.replace(/^\/+/, '');
+                        })()
+                    });
 
-                console.log('Notificación de comentario enviada exitosamente');
+                    console.log('Notificación de comentario enviada exitosamente');
+                } else {
+                    console.log('❌ Usuario propietario no está conectado');
+                }
             }
 
         } catch (error) {
