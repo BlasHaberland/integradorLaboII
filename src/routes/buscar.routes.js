@@ -5,26 +5,49 @@ const autMiddleware = require('../middleware/aut.middleware');
 
 // BUSCAR USUARIO
 
-router.get('/',[autMiddleware], async (req, res) => {
+// BUSCAR
+router.get('/', [autMiddleware], async (req, res) => {
     try {
         const db = await initConnection();
         const query = req.query.query?.trim();
         if (!query) {
-            return res.redirect('/');
+            return res.redirect('/home');
         }
 
-        //BUSCAR ALIAS EXACTO
-        const [usuarios] = await db.query('SELECT * FROM usuarios WHERE alias = ?', [query]);
+        const wildQuery = `%${query}%`;
 
-        console.log('Usuarios encontrados:', usuarios);
+        // 1. BUSCAR USUARIOS (por alias, nombre o apellido)
+        const [usuarios] = await db.query(
+            'SELECT alias, nombre, apellido, imagen_perfil FROM usuarios WHERE alias LIKE ? OR nombre LIKE ? OR apellido LIKE ?',
+            [wildQuery, wildQuery, wildQuery]
+        );
 
-        if (usuarios && usuarios.length > 0) {
-            return res.redirect(`/usuario/${usuarios[0].alias}`);
-        }
+        // 2. BUSCAR ÁLBUMES (por título o por tags)
+        const [albumes] = await db.query(
+            `SELECT DISTINCT a.* FROM albumes a 
+             LEFT JOIN albumes_tags at ON a.id_album = at.id_album 
+             LEFT JOIN tags t ON at.id_tag = t.id_tag 
+             WHERE a.titulo LIKE ? OR t.nombre LIKE ?`,
+            [wildQuery, wildQuery]
+        );
 
-        res.status(404).redirect(`/home?mensaje=No existe ningún usuario con el alias "${query}".`);
+        // 3. BUSCAR IMÁGENES (por título o descripción)
+        const [imagenes] = await db.query(
+            'SELECT * FROM imagenes WHERE titulo LIKE ? OR descripcion LIKE ?',
+            [wildQuery, wildQuery]
+        );
+
+        res.render('buscar-resultados', {
+            query,
+            usuarios,
+            albumes,
+            imagenes,
+            usuarioLogueado: req.usuario
+        });
+
     } catch (error) {
-        console.error('Error al buscar usuario:', error);
+        console.error('Error al realizar la búsqueda:', error);
+        res.status(500).send('Error interno en la búsqueda');
     }
 })
 

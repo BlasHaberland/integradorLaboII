@@ -1,8 +1,10 @@
-<nav class="w-full flex items-center justify-between px-8 py-4 bg-black/40 border-b border-white/30 fixed top-0 left-0 z-20 backdrop-blur-md">
+<nav
+    class="w-full flex items-center justify-between px-8 py-4 bg-black/40 border-b border-white/30 fixed top-0 left-0 z-20 backdrop-blur-md">
 
     <!-- Botón Home a la izquierda -->
-    <div class="flex-none">
-        <a href="/home" class="flex items-center px-4 py-2 rounded border border-white/40 text-white bg-black/30 hover:bg-orange-400 hover:text-black transition">
+    <div class="flex-none flex items-center gap-4">
+        <a href="/home"
+            class="flex items-center px-4 py-2 rounded border border-white/40 text-white bg-black/30 hover:bg-orange-400 hover:text-black transition">
             <svg width="24" height="24" class="mr-2">
                 <use href="#home"></use>
             </svg>
@@ -13,26 +15,46 @@
     <div class="flex-1 flex justify-center">
         <div class="relative w-96">
             <form id="form-busqueda" action="/buscar" method="GET">
-                <input 
-                    type="text" 
-                    name="query" 
-                    id="barra-busqueda"
-                    placeholder="Buscar usuarios, álbumes o etiquetas..." 
-                    class="w-full px-4 py-2 rounded-lg border border-white/40 bg-black/30 text-white placeholder:text-white/60 focus:outline-none pr-10" 
-                    autocomplete="off"
-                    required
-                />
-                <div id="resultados-busqueda" class="absolute left-0 right-0 mt-1 bg-white rounded shadow z-50 text-black max-h-60 overflow-y-auto"></div>
+                <input type="text" name="query" id="barra-busqueda"
+                    placeholder="Buscar usuarios, álbumes o etiquetas..."
+                    class="w-full px-4 py-2 rounded-lg border border-white/40 bg-black/30 text-white placeholder:text-white/60 focus:outline-none pr-10"
+                    autocomplete="off" required />
+                <div id="resultados-busqueda"
+                    class="absolute left-0 right-0 mt-1 bg-white rounded shadow z-50 text-black max-h-60 overflow-y-auto">
+                </div>
             </form>
-            <svg id="icono-ojo" width="24" height="24" class="absolute right-3 top-1/2 -translate-y-1/2 text-white pointer-events-none transition-all duration-200">
+            <svg id="icono-ojo" width="24" height="24"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-white pointer-events-none transition-all duration-200">
                 <use href="#ojo-cerrado"></use>
             </svg>
         </div>
     </div>
 
-    <div>
+    <div class="flex items-center gap-4">
+        <!-- Notificaciones -->
+        <a href="/notificaciones" class="relative group p-2 rounded-full hover:bg-white/10 transition-all text-white">
+            <svg width="24" height="24">
+                <use href="#campana"></use>
+            </svg>
+            <% if (typeof notificacionesPendientes !=='undefined' && notificacionesPendientes> 0) { %>
+                <span id="notif-counter"
+                    class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#1E1E1E]">
+                    <%= notificacionesPendientes %>
+                </span>
+                <% } %>
+        </a>
+
+        <!-- Perfil -->
+        <a href="/usuario/editar" class="p-2 rounded-full hover:bg-white/10 transition-all text-white"
+            title="Editar Perfil">
+            <svg width="24" height="24">
+                <use href="#ajuste"></use>
+            </svg>
+        </a>
+
         <form action="/logout" method="POST">
-            <button type="submit" class="px-4 py-2 rounded border border-white/40 text-white bg-black/30 hover:bg-orange-400 hover:text-black transition">Salir</button>
+            <button type="submit"
+                class="px-4 py-2 rounded border border-white/40 text-white bg-black/30 hover:bg-orange-400 hover:text-black transition">Salir</button>
         </form>
     </div>
 </nav>

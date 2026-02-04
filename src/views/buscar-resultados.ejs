@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados de búsqueda: <%= query %> - Artesanos.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="/favicon.png" type="image/png">
+</head>
+
+<body class="min-h-screen"
+    style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center; background-attachment: fixed;">
+    <%- include('partials/navbar') %>
+
+        <div class="fixed inset-0 backdrop-blur-md bg-black/10 z-0"></div>
+
+        <div class="relative z-10 container mx-auto pt-24 pb-12 px-4">
+            <h2 class="text-3xl font-bold text-white mb-8">Resultados para "<%= query %>"</h2>
+
+            <!-- USUARIOS -->
+            <section class="mb-12">
+                <h3 class="text-xl font-bold text-cyan-400 mb-4 border-b border-cyan-400/30 pb-2">Usuarios</h3>
+                <% if (usuarios.length> 0) { %>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                        <% usuarios.forEach(u=> { %>
+                            <a href="/usuario/<%= u.alias %>"
+                                class="bg-black/30 backdrop-blur-sm p-4 rounded-2xl border border-white/10 hover:border-cyan-400 transition-all flex flex-col items-center gap-3">
+                                <img src="<%= u.imagen_perfil && u.imagen_perfil !== 'default-user.jpg' ? u.imagen_perfil : '/default-user.jpg' %>"
+                                    class="w-20 h-20 rounded-full object-cover border-2 border-cyan-400">
+                                <div class="text-center">
+                                    <p class="text-white font-bold">
+                                        <%= u.nombre %>
+                                            <%= u.apellido %>
+                                    </p>
+                                    <p class="text-cyan-400 text-sm">@<%= u.alias %>
+                                    </p>
+                                </div>
+                            </a>
+                            <% }) %>
+                    </div>
+                    <% } else { %>
+                        <p class="text-white/60 italic">No se encontraron usuarios.</p>
+                        <% } %>
+            </section>
+
+            <!-- ÁLBUMES -->
+            <section class="mb-12">
+                <h3 class="text-xl font-bold text-orange-400 mb-4 border-b border-orange-400/30 pb-2">Álbumes</h3>
+                <% if (albumes.length> 0) { %>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <% albumes.forEach(a=> { %>
+                            <a href="/albumes/<%= a.id_album %>"
+                                class="bg-black/30 backdrop-blur-sm p-4 rounded-2xl border border-white/10 hover:border-orange-400 transition-all">
+                                <img src="<%= a.portada || '/default-album.jpg' %>"
+                                    class="w-full h-32 object-cover rounded-xl mb-3">
+                                <p class="text-white font-bold text-center">
+                                    <%= a.titulo %>
+                                </p>
+                            </a>
+                            <% }) %>
+                    </div>
+                    <% } else { %>
+                        <p class="text-white/60 italic">No se encontraron álbumes.</p>
+                        <% } %>
+            </section>
+
+            <!-- IMÁGENES -->
+            <section>
+                <h3 class="text-xl font-bold text-emerald-400 mb-4 border-b border-emerald-400/30 pb-2">Imágenes</h3>
+                <% if (imagenes.length> 0) { %>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <% imagenes.forEach(i=> { %>
+                            <div
+                                class="group relative bg-black/30 rounded-xl overflow-hidden border border-white/10 hover:border-emerald-400 transition-all">
+                                <img src="<%= i.url %>" class="w-full h-48 object-cover">
+                                <div
+                                    class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center items-center p-4 text-center">
+                                    <p class="text-white font-bold mb-1">
+                                        <%= i.titulo %>
+                                    </p>
+                                    <p class="text-white/80 text-xs line-clamp-2">
+                                        <%= i.descripcion %>
+                                    </p>
+                                    <a href="/albumes/<%= i.id_album %>"
+                                        class="mt-3 text-emerald-400 text-sm font-bold hover:underline text-wrap">Ver
+                                        álbum</a>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } else { %>
+                        <p class="text-white/60 italic">No se encontraron imágenes.</p>
+                        <% } %>
+            </section>
+        </div>
+
+        <%- include('partials/icons') %>
+</body>
+
+</html>
