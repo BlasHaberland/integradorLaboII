@@ -15,6 +15,9 @@ const logoutRoutes = require('./src/routes/logout.routes');
 const buscarRoutes = require('./src/routes/buscar.routes');
 const usuariosRoutes = require('./src/routes/usuarios.routes');
 const amistadesRoutes = require('./src/routes/amistades.routes');
+const notificacionesRoutes = require('./src/routes/notificaciones.routes');
+const usuarioMiddleware = require('./src/middleware/usuario.middleware');
+const notificacionesMiddleware = require('./src/middleware/notificaciones.middleware');
 
 const { initConnection } = require('./src/db/conection');
 
@@ -24,6 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(usuarioMiddleware);
+app.use(notificacionesMiddleware);
 
 const server = http.createServer(app);
 
@@ -44,6 +49,7 @@ app.use('/logout', logoutRoutes);
 app.use('/buscar', buscarRoutes);
 app.use('/usuario', usuariosRoutes);
 app.use('/amistades', amistadesRoutes);
+app.use('/notificaciones', notificacionesRoutes);
 
 //SocketIO
 const { Server } = require('socket.io');

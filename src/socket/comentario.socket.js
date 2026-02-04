@@ -1,26 +1,26 @@
 const { initConnection } = require('../db/conection');
 
 //COMENTAR IMAGENES
-function comentarioSocket(socket, io,usuariosConectados) { 
+function comentarioSocket(socket, io, usuariosConectados) {
     socket.on('nuevo-comentario', async (data) => {
         console.log('Evento nuevo-comentario recibido:', data);
-        
+
         try {
             const db = await initConnection();
             console.log('id usuario:', data.id_usuario);
 
             const [usuario] = await db.query(
-                'SELECT alias, imagen_perfil FROM usuarios WHERE id_usuario = ?', 
+                'SELECT alias, imagen_perfil FROM usuarios WHERE id_usuario = ?',
                 [data.id_usuario]
             );
-            
+
             if (!usuario[0]) {
                 console.error('Usuario no encontrado');
                 console.log()
-                return; 
+                return;
             }
 
-             const [imagenData] = await db.query(`
+            const [imagenData] = await db.query(`
                 SELECT a.id_usuario as propietario_id 
                 FROM imagenes i 
                 INNER JOIN albumes a ON i.id_album = a.id_album 
@@ -47,19 +47,22 @@ function comentarioSocket(socket, io,usuariosConectados) {
             });
 
             //Enviar notificacion
-              if (imagenData.length > 0 && imagenData[0].propietario_id !== data.id_usuario) {
+            if (imagenData.length > 0 && imagenData[0].propietario_id !== data.id_usuario) {
                 const propietarioId = imagenData[0].propietario_id;
-                const socketId = usuariosConectados[propietarioId]; // ← Usar tu sistema
-                
-                console.log('Enviando notificación de comentario a usuario:', propietarioId, 'socket:', socketId);
-                console.log('Usuarios conectados actualmente:', usuariosConectados);
-                
-                if (socketId) {
-                    // Crear extracto del comentario
-                    const extractoComentario = data.texto.length > 50 
-                        ? data.texto.substring(0, 50) + '...' 
-                        : data.texto;
+                const socketId = usuariosConectados[propietarioId];
 
+                const extractoComentario = data.texto.length > 50
+                    ? data.texto.substring(0, 50) + '...'
+                    : data.texto;
+                const mensaje = `${usuario[0].alias} comentó: "${extractoComentario}"`;
+
+                // Guardar en DB
+                await db.query(
+                    'INSERT INTO notificaciones (id_usuario, tipo, mensaje, id_referencia) VALUES (?, ?, ?, ?)',
+                    [propietarioId, 'comentario', mensaje, data.id_imagen]
+                );
+
+                if (socketId) {
                     io.to(socketId).emit('nuevoComentario', {
                         autor: usuario[0].alias,
                         contenido: data.texto,
@@ -71,10 +74,6 @@ function comentarioSocket(socket, io,usuariosConectados) {
                             return '/uploads/' + img.replace(/^\/+/, '');
                         })()
                     });
-
-                    console.log('Notificación de comentario enviada exitosamente');
-                } else {
-                    console.log('❌ Usuario propietario no está conectado');
                 }
             }
 

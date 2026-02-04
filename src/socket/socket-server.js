@@ -10,8 +10,7 @@ const socketServer = (io) => {
             usuariosConectados[id_usuario] = socket.id;
             console.log('Usuario registrado en socket:', id_usuario, socket.id);
         });
-
-        // Aquí solo registras los listeners una vez por conexión
+        
         comentarioSocket(socket, io, usuariosConectados);
 
         socket.on('disconnect', () => {

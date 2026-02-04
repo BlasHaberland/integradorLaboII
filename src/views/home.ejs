@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Perfil de Usuario - Artesanos.com</title>
@@ -7,94 +8,116 @@
     <link rel="icon" href="/favicon.png" type="image/png">
 </head>
 
-<body class="min-h-screen" style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+<body class="min-h-screen"
+    style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
 
     <div class="fixed inset-0 backdrop-blur-md bg-black/10 z-0"></div>
     <%- include('partials/navbar') %>
 
-    <div class="relative z-10 flex flex-row items-start justify-center min-h-screen w-full gap-10 py-16 pt-24">
+        <div class="relative z-10 flex flex-row items-start justify-center min-h-screen w-full gap-10 py-16 pt-24">
 
-        <!-- muestro el perifl -->
-         <% if (usuario) { %>
-        <div class="bg-orange-200/40 backdrop-blur-sm rounded-3xl p-10 flex flex-col items-center gap-4 shadow-2xl border border-orange-300/60 w-80 ml-2">
-            <img src="<%= usuario.imagen_perfil || '/default-profile.png' %>" alt="Imagen de perfil" class="w-40 h-40 rounded-full object-cover border-4 border-cyan-400 shadow-lg mb-4">
-            <div class="flex items-center gap-2">
-                <h2 class="text-3xl font-bold text-white text-center"><%= usuario.nombre %></h2>
-                <div class="p-2 m-1 rounded-lg text-white font-semibold hover:scale-150 transition-all cursor-pointer scale-125">
-                    <a href="/usuario/editar"> 
-                        <svg width="24" height="24" class="inline-block"><use href="#ajuste"></use></svg>
-                    </a>
+            <!-- muestro el perifl -->
+            <% if (usuario) { %>
+                <div
+                    class="bg-orange-200/40 backdrop-blur-sm rounded-3xl p-10 flex flex-col items-center gap-4 shadow-2xl border border-orange-300/60 w-80 ml-2">
+                    <img src="<%= usuario.imagen_perfil || '/default-profile.png' %>" alt="Imagen de perfil"
+                        class="w-40 h-40 rounded-full object-cover border-4 border-cyan-400 shadow-lg mb-4">
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-3xl font-bold text-white text-center">
+                            <%= usuario.nombre %>
+                        </h2>
+                    </div>
+                    <div>
+                        <button id="abrirModalSeguidos"
+                            class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md transition-all">Seguidos</button>
+                        <button id="abrirModalSolicitudes"
+                            class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md transition-all">
+                            Seguidores
+                        </button>
+                    </div>
+                    <p class="text-lg text-cyan-400 font-semibold text-center">@<%= usuario.alias %>
+                    </p>
+                    <div class="bg-cyan-800 p-4 rounded-lg shadow-2xl w-full">
+                        <p class="text-lg text-cyan-300 font-semibold text-center mb-2">Intereses: <%=
+                                usuario.intereses===null ? 'el usuario no tiene intereses' : usuario.intereses %>
+                        </p>
+                        <hr>
+                        <p class="text-lg text-cyan-300 font-semibold text-center mt-2">Antecedentes: <%=
+                                usuario.antecedentes===null ? 'el usuario no tiene antecedentes' : usuario.antecedentes
+                                %>
+                        </p>
+                    </div>
+
                 </div>
-            </div>
-            <div>
-                <button id="abrirModalSeguidos" class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md transition-all">Seguidos</button>
-                <button id="abrirModalSolicitudes" class="bg-cyan-500 p-2 m-1 rounded-lg text-white font-semibold hover:bg-cyan-400 hover:scale-110 hover:shadow-md transition-all">
-                    Seguidores
-                </button>
-            </div>
-            <p class="text-lg text-cyan-400 font-semibold text-center">@<%= usuario.alias %></p>
-            <div class="bg-cyan-800 p-4 rounded-lg shadow-2xl w-full">
-                <p class="text-lg text-cyan-300 font-semibold text-center mb-2">Intereses: <%= usuario.intereses === null ? 'el usuario no tiene intereses' : usuario.intereses %></p>
-                <hr>
-                <p class="text-lg text-cyan-300 font-semibold text-center mt-2">Antecedentes: <%= usuario.antecedentes === null ? 'el usuario no tiene antecedentes' : usuario.antecedentes %></p>
-            </div>
-           
-        </div>
-        <% } %>
+                <% } %>
 
-        <!-- muestro los albumes -->
-        <div class="flex-1 p-4">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-2xl font-bold text-white flex items-center gap-2">
-                    Tus álbumes
-                    <a href="#" id="abrirModalAlbum" class=" text-white py-1 rounded-xl hover:scale-110 transition-all flex items-center" title="Agregar álbum">
-                        <svg width="24" height="24" class="inline-block"><use href="#add"></use></svg>
-                    </a>
-                </h3>
-            </div>
-            
-            <% if (albumes && albumes.length > 0) { %>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <% albumes.forEach(function(album) { %>
-                        <a href="/albumes/<%= album.id_album %>" class="block">
-                            <div class="bg-cyan-800/90 rounded-xl shadow-lg p-4 flex flex-col items-center transition-transform duration-100 will-change-transform cursor-pointer hover:scale-105 hover:shadow-md hover:bg-cyan-500/90 hover:border-2 hover:border-orange-400">
-                                <img src="<%= album.portada || '/default-album.jpg' %>" alt="Portada álbum" class="w-52 h-32 object-cover rounded-lg mb-3 ">
-                                <div class="text-lg font-semibold text-cyan-100 text-center"><%= album.titulo %></div>
-                                <div class="text-sm text-white text-center"><%= album.descripcion ? album.descripcion : 'Sin descripción' %></div>
-                                <div class="flex flex-wrap gap-1 justify-center mt-2">
-                                    <% if (album.tags && album.tags.length > 0) { %>
-                                        <% album.tags.forEach(function(tag) { %>
-                                            <span class="bg-cyan-900/60 text-cyan-200 px-2 py-0.5 rounded text-xs"><%= tag.nombre %></span>
-                                        <% }) %>
-                                    <% } %>
-                                </div>
+                    <!-- muestro los albumes -->
+                    <div class="flex-1 p-4">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                                Tus álbumes
+                                <a href="#" id="abrirModalAlbum"
+                                    class=" text-white py-1 rounded-xl hover:scale-110 transition-all flex items-center"
+                                    title="Agregar álbum">
+                                    <svg width="24" height="24" class="inline-block">
+                                        <use href="#add"></use>
+                                    </svg>
+                                </a>
+                            </h3>
+                        </div>
+
+                        <% if (albumes && albumes.length> 0) { %>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                <% albumes.forEach(function(album) { %>
+                                    <a href="/albumes/<%= album.id_album %>" class="block">
+                                        <div
+                                            class="bg-cyan-800/90 rounded-xl shadow-lg p-4 flex flex-col items-center transition-transform duration-100 will-change-transform cursor-pointer hover:scale-105 hover:shadow-md hover:bg-cyan-500/90 hover:border-2 hover:border-orange-400">
+                                            <img src="<%= album.portada || '/default-album.jpg' %>" alt="Portada álbum"
+                                                class="w-52 h-32 object-cover rounded-lg mb-3 ">
+                                            <div class="text-lg font-semibold text-cyan-100 text-center">
+                                                <%= album.titulo %>
+                                            </div>
+                                            <div class="text-sm text-white text-center">
+                                                <%= album.descripcion ? album.descripcion : 'Sin descripción' %>
+                                            </div>
+                                            <div class="flex flex-wrap gap-1 justify-center mt-2">
+                                                <% if (album.tags && album.tags.length> 0) { %>
+                                                    <% album.tags.forEach(function(tag) { %>
+                                                        <span
+                                                            class="bg-cyan-900/60 text-cyan-200 px-2 py-0.5 rounded text-xs">
+                                                            <%= tag.nombre %>
+                                                        </span>
+                                                        <% }) %>
+                                                            <% } %>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <% }) %>
                             </div>
-                        </a>
-                    <% }) %>
-                </div>
-            <% } else { %>
-                <div class="text-white text-lg">No tienes álbumes creados aún.</div>
-            <% } %>
+                            <% } else { %>
+                                <div class="text-white text-lg">No tienes álbumes creados aún.</div>
+                                <% } %>
+                    </div>
         </div>
-    </div>
-    
-<%- include('partials/icons') %>
-<%- include('partials/modales-home') %>
-<%- include('partials/notificacion-popout') %>
 
-<!-- socket -->
-<script src="/socket.io/socket.io.js"></script>
-<script>
-    window.socket = io(); // Crea una instancia global de socket
-    window.socket.on('connect', function() {
-        console.log('Socket realmente conectado:', window.socket.id);
-        window.socket.emit('usuarioConectado', '<%= usuario.id_usuario %>');
-    });
-</script>
- <script src="/js/popout.sokcet.js"></script>
+        <%- include('partials/icons') %>
+            <%- include('partials/modales-home') %>
+                <%- include('partials/notificacion-popout') %>
 
- <!-- busqueda -->
-  <script src="/js/busqueda.js"></script>
+                    <!-- socket -->
+                    <script src="/socket.io/socket.io.js"></script>
+                    <script>
+                        window.socket = io(); // Crea una instancia global de socket
+                        window.socket.on('connect', function () {
+                            console.log('Socket realmente conectado:', window.socket.id);
+                            window.socket.emit('usuarioConectado', '<%= usuario.id_usuario %>');
+                        });
+                    </script>
+                    <script src="/js/popout.sokcet.js"></script>
+
+                    <!-- busqueda -->
+                    <script src="/js/busqueda.js"></script>
 
 </body>
+
 </html>
