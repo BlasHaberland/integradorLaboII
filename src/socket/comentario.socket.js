@@ -46,7 +46,7 @@ function comentarioSocket(socket, io, usuariosConectados) {
                 })(),
             });
 
-            //Enviar notificacion
+
             if (imagenData.length > 0 && imagenData[0].propietario_id != data.id_usuario) {
                 const propietarioId = imagenData[0].propietario_id;
                 const socketId = usuariosConectados[propietarioId];

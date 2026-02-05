@@ -1,7 +1,7 @@
 <nav
     class="w-full h-16 md:h-20 flex items-center justify-between px-4 md:px-8 bg-black/60 border-b border-white/20 fixed top-0 left-0 z-[60] backdrop-blur-xl transition-all duration-300">
 
-    <!-- Lado Izquierdo: Home -->
+
     <div class="flex items-center">
         <a href="/home"
             class="flex items-center px-4 py-2 rounded-xl border border-white/20 text-white bg-white/5 hover:bg-orange-500 hover:text-white hover:border-orange-400 transition-all shadow-lg group">
@@ -12,7 +12,7 @@
         </a>
     </div>
 
-    <!-- Centro: Búsqueda (Desktop only in top bar) -->
+
     <div class="hidden md:block flex-1 max-w-md mx-8">
         <div class="relative group">
             <form action="/buscar" method="GET">
@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <!-- Derecha: Acciones Desktop -->
+
     <div class="hidden md:flex items-center gap-4">
         <a href="/notificaciones" class="relative p-3 rounded-2xl hover:bg-white/10 transition-all text-white group"
             title="Notificaciones">
@@ -57,7 +57,7 @@
         </form>
     </div>
 
-    <!-- Botón Menú Móvil -->
+
     <div class="md:hidden flex items-center gap-3">
         <!-- Campanita móvil -->
         <a href="/notificaciones" class="relative p-2.5 text-white bg-white/5 rounded-xl border border-white/10">
@@ -74,17 +74,17 @@
         <button id="btn-mobile-menu"
             class="text-white p-2.5 bg-white/5 rounded-xl border border-white/10 active:scale-95 transition-all">
             <svg id="menu-icon" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7">
-                </path>
+                <path id="menu-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                    d="M4 6h16M4 12h16m-7 6h7"></path>
             </svg>
         </button>
     </div>
 
-    <!-- Menú Desplegable "En Cascada" -->
+
     <div id="mobile-menu"
-        class="absolute top-full left-0 w-full bg-black/90 backdrop-blur-2xl border-b border-white/10 overflow-hidden max-h-0 transition-all duration-500 ease-in-out md:hidden z-50">
+        class="absolute top-full left-0 w-full bg-black/95 backdrop-blur-2xl border-b border-white/10 overflow-hidden max-h-0 transition-all duration-500 ease-in-out md:hidden z-50">
         <div class="p-6 flex flex-col gap-6">
-            <!-- Búsqueda en menú móvil -->
+
             <form action="/buscar" method="GET" class="relative">
                 <input type="text" name="query" placeholder="¿Qué estás buscando?"
                     class="w-full px-6 py-4 rounded-2xl border border-white/10 bg-white/5 text-white text-lg placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
@@ -135,7 +135,7 @@
                     <span class="text-lg font-bold">Configuración</span>
                 </a>
 
-                <form action="/logout" method="POST" class="mt-4">
+                <form action="/logout" method="POST" class="mt-4 m-0">
                     <button type="submit"
                         class="w-full py-5 rounded-[2rem] bg-gradient-to-r from-red-600 to-red-700 text-white text-xl font-black uppercase tracking-widest shadow-2xl shadow-red-900/40 active:scale-95 transition-all">
                         Cerrar Sesión
@@ -147,50 +147,54 @@
 </nav>
 
 <script>
-    // Lógica menú móvil tipo cascada
-    const btnMobile = document.getElementById('btn-mobile-menu');
-    const menuItems = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-    let isOpen = false;
+    (function () {
+        const btnMobile = document.getElementById('btn-mobile-menu');
+        const menuItems = document.getElementById('mobile-menu');
+        const menuPath = document.getElementById('menu-path');
+        let isOpen = false;
 
-    const toggleMenu = () => {
-        isOpen = !isOpen;
-        if (isOpen) {
-            menuItems.style.maxHeight = '600px';
-            menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>`;
-            menuItems.classList.add('shadow-2xl');
-        } else {
-            menuItems.style.maxHeight = '0';
-            menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>`;
-            menuItems.classList.remove('shadow-2xl');
-        }
-    };
+        const toggleMenu = () => {
+            isOpen = !isOpen;
+            if (isOpen) {
+                menuItems.style.maxHeight = '600px';
+                menuPath.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                menuItems.classList.add('shadow-2xl');
+            } else {
+                menuItems.style.maxHeight = '0';
+                menuPath.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
+                menuItems.classList.remove('shadow-2xl');
+            }
+        };
 
-    btnMobile?.addEventListener('click', toggleMenu);
-
-    // Cerrar si se hace click fuera
-    document.addEventListener('click', (e) => {
-        if (isOpen && !menuItems.contains(e.target) && !btnMobile.contains(e.target)) {
+        btnMobile?.addEventListener('click', (e) => {
+            e.stopPropagation();
             toggleMenu();
+        });
+
+
+        document.addEventListener('click', (e) => {
+            if (isOpen && !menuItems.contains(e.target) && !btnMobile.contains(e.target)) {
+                toggleMenu();
+            }
+        });
+
+        const input = document.querySelector('input[name="query"]');
+        const icono = document.getElementById('icono-ojo');
+
+        function actualizarIcono() {
+            if (!icono) return;
+            if (document.activeElement === input || input.value.length > 0) {
+                icono.innerHTML = '<use href="#ojo-abierto"></use>';
+            } else {
+                icono.innerHTML = '<use href="#ojo-cerrado"></use>';
+            }
         }
-    });
 
-    const input = document.querySelector('input[name="query"]');
-    const icono = document.getElementById('icono-ojo');
-
-    function actualizarIcono() {
-        if (!icono) return;
-        if (document.activeElement === input || input.value.length > 0) {
-            icono.innerHTML = '<use href="#ojo-abierto"></use>';
-        } else {
-            icono.innerHTML = '<use href="#ojo-cerrado"></use>';
+        if (input) {
+            actualizarIcono();
+            input.addEventListener('focus', actualizarIcono);
+            input.addEventListener('blur', actualizarIcono);
+            input.addEventListener('input', actualizarIcono);
         }
-    }
-
-    if (input) {
-        actualizarIcono();
-        input.addEventListener('focus', actualizarIcono);
-        input.addEventListener('blur', actualizarIcono);
-        input.addEventListener('input', actualizarIcono);
-    }
+    })();
 </script>

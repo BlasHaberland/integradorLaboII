@@ -27,12 +27,12 @@
                     </span>
                 </div>
 
-                <!-- Grid de imágenes -->
+
                 <div
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 justify-items-center">
 
                     <div class="w-full max-w-[280px]">
-                        <!-- Botón de agregar imagen  -->
+
                         <% if (usuarioLogueado && usuarioLogueado.id===album.id_usuario) { %>
                             <button id="abrirModalImagen"
                                 class="w-full aspect-video flex flex-col items-center justify-center border-2 border-dashed border-cyan-400/50 rounded-xl bg-cyan-900/20 hover:bg-cyan-700/40 hover:border-cyan-400 transition-all text-white group mb-3">
@@ -43,12 +43,12 @@
                             <% } %>
                     </div>
 
-                    <!-- Imágenes del álbum -->
+
                     <% if (imagenes && imagenes.length> 0) { %>
                         <% imagenes.forEach(function(img) { %>
                             <div
                                 class="w-full max-w-[280px] aspect-video rounded-xl overflow-hidden border-2 border-white/10 bg-cyan-900/40 shadow-xl flex flex-col items-center hover:scale-105 hover:border-cyan-400 transition-all relative group">
-                                <!-- Botón compartir (solo si soy dueño) -->
+
                                 <% if (usuarioLogueado && usuarioLogueado.id===album.id_usuario) { %>
                                     <button onclick="toggleCompartir('<%= img.id_imagen %>', this)"
                                         class="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 backdrop-blur-md z-20 transition-all <%= img.compartida ? 'text-yellow-400' : 'text-gray-400 opacity-0 group-hover:opacity-100 hover:text-white' %>"
@@ -75,7 +75,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Comentarios ocultos para el modal -->
+
                                         <div id="comentarios-img-<%= img.id_imagen %>" class="hidden">
                                             <% if (img.comentarios && img.comentarios.length> 0) { %>
                                                 <% img.comentarios.forEach(function(com) { %>
@@ -109,7 +109,7 @@
 
             </div>
 
-            <!-- Modal para ver imagen -->
+
             <div id="modalVerImagen"
                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm hidden p-2 md:p-6">
                 <div
@@ -118,14 +118,14 @@
                     <button id="cerrarModalVerImagen" type="button"
                         class="absolute top-2 right-4 text-3xl text-white/60 hover:text-white z-30">&times;</button>
 
-                    <!-- Imagen -->
+
                     <div
                         class="flex-1 flex items-center justify-center bg-black/40 rounded-xl overflow-hidden min-h-[300px] md:min-h-0">
                         <img id="imagenModalSrc" src="" alt="Imagen ampliada"
                             class="max-w-full max-h-full object-contain">
                     </div>
 
-                    <!-- Detalles y Comentarios -->
+
                     <div class="w-full md:w-80 flex flex-col h-full">
                         <div class="border-b border-white/10 pb-4 mb-4">
                             <h2 id="tituloModal" class="text-white text-xl font-bold"></h2>
@@ -156,7 +156,7 @@
                             }
                         </style>
 
-                        <!-- comentario -->
+
                         <form id="formComentario" class="mt-4 pt-4 border-t border-white/10">
                             <input type="hidden" name="id_imagen" id="inputIdImagen">
                             <div class="flex gap-2">
@@ -177,7 +177,7 @@
                 </div>
             </div>
 
-            <!-- Modal para subir imagen -->
+
             <div id="modalImagen"
                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
                 <div
@@ -250,6 +250,6 @@
                 </script>
 </body>
 
-<!-- TODO: CREAR PARTIALS PARA EVITAR LA IDENTACION -->
+
 
 </html>
