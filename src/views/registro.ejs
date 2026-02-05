@@ -1,45 +1,56 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Registro - Artesanos.com</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="/favicon.png" type="image/png">
 </head>
-<body class="min-h-screen flex items-center justify-center" style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+
+<body class="min-h-screen flex items-center justify-center"
+    style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
 
     <div class="fixed inset-0 backdrop-blur-md bg-black/10 z-0"></div>
 
 
 
-    <div class="relative z-10 bg-orange-200/40 backdrop-blur-sm rounded-3xl p-10 flex flex-col items-center gap-6 shadow-2xl border border-orange-300/60 w-full max-w-md">
+    <div
+        class="relative z-10 bg-orange-200/40 backdrop-blur-md rounded-3xl p-8 md:p-10 flex flex-col items-center gap-6 shadow-2xl border border-orange-300/60 w-full max-w-[90%] md:max-w-md mt-10 mb-10">
 
-        <h2 class="text-3xl font-bold text-slate-800 mb-4 text-white">Crear cuenta</h2>
+        <h2 class="text-3xl font-bold mb-4 text-white">Crear cuenta</h2>
 
         <form id="registroForm" action="/registro" method="POST" class="flex flex-col gap-4 w-full">
-            <div>
-                <input type="text" id="nombre" name="nombre" placeholder="Nombre" required class=" w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="nombre" name="nombre" placeholder="Nombre" required
+                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
+                <input type="text" id="apellido" name="apellido" placeholder="Apellido" required
+                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
             </div>
             <div>
-                <input type="text" id="apellido" name="apellido" placeholder="Apellido" required class=" w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input type="text" id="alias" name="alias" placeholder="Alias" required
+                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
             </div>
             <div>
-                <input type="text" id="alias" name="alias" placeholder="Alias" required class=" w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input type="email" name="email" id="correo" placeholder="Correo electrónico" required
+                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
             </div>
             <div>
-                <input type="email" name="email" id="correo" placeholder="Correo electrónico" required class="w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input type="password" id="clave" name="clave" placeholder="Contraseña" required
+                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
             </div>
             <div>
-                <input type="password" id="clave" name="clave" placeholder="Contraseña" required class="w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input type="password" id="clave2" name="clave2" placeholder="Confirmar contraseña" required
+                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
             </div>
-            <div>
-                <input type="password" id="clave2" name="clave2" placeholder="Misma contraseña" required class="w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500">
-            </div>
-            <button type="submit" class="w-full text-xl text-white bg-cyan-500 rounded-xl py-3 font-semibold hover:scale-105 hover:bg-cyan-700 transition-all">Registrarse</button>
+            <button type="submit"
+                class="w-full text-xl text-white bg-cyan-500 rounded-xl py-3 font-bold hover:scale-[1.02] hover:bg-cyan-600 transition-all shadow-lg shadow-cyan-500/20 mt-2">Registrarse</button>
         </form>
-        <a href="/login" class="text-cyan-200 hover:underline">¿Ya tienes cuenta? Inicia sesión</a>
+        <a href="/login" class="text-cyan-200 hover:text-white transition-colors text-sm font-medium">¿Ya tienes cuenta?
+            Inicia sesión aquí</a>
     </div>
 
-<script src="/js/validacion-registro.js"> </script>
+    <script src="/js/validacion-registro.js"> </script>
 </body>
+
 </html>

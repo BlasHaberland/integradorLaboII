@@ -13,80 +13,109 @@
 
         <div class="fixed inset-0 backdrop-blur-md bg-black/10 z-0"></div>
 
-        <div class="flex justify-center items-center my-20">
+        <div class="flex justify-center items-center min-h-screen py-20 px-4 md:px-0">
             <div
-                class="bg-orange-200/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-orange-300/60 w-full max-w-lg">
+                class="bg-orange-200/50 backdrop-blur-sm rounded-3xl p-6 md:p-10 shadow-2xl border border-orange-300/60 w-full max-w-lg mt-10 md:mt-0">
                 <% if (typeof mensaje !=='undefined' && (mensaje==='PerfilActualizado' || mensaje==='ClaveActualizada'
                     )) { %>
-                    <div class="bg-cyan-500/80 text-white p-3 rounded-lg mb-4 text-center">
+                    <div
+                        class="bg-cyan-500/80 text-white p-3 rounded-xl mb-6 text-center text-sm font-bold border border-white/20">
                         <%= mensaje==='PerfilActualizado' ? '¡Perfil actualizado con éxito!'
                             : '¡Contraseña actualizada con éxito!' %>
                     </div>
                     <% } %>
 
                         <form action="/usuario/editar" method="POST" enctype="multipart/form-data"
-                            class="flex flex-col gap-4">
-                            <!-- ... existentes campos ... -->
-                            <div>
-                                <label class="block text-white font-semibold mb-1">Nombre</label>
-                                <input type="text" name="nombre" value="<%= usuario.nombre %>" required
-                                    class="border rounded-lg px-3 py-2 w-full text-black">
+                            class="flex flex-col gap-5">
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label
+                                        class="block text-white text-xs font-bold mb-1 uppercase tracking-wider">Nombre</label>
+                                    <input type="text" name="nombre" value="<%= usuario.nombre %>" required
+                                        class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-white text-xs font-bold mb-1 uppercase tracking-wider">Apellido</label>
+                                    <input type="text" name="apellido" value="<%= usuario.apellido %>" required
+                                        class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
+                                </div>
                             </div>
+
                             <div>
-                                <label class="block text-white font-semibold mb-1">Apellido</label>
-                                <input type="text" name="apellido" value="<%= usuario.apellido %>" required
-                                    class="border rounded-lg px-3 py-2 w-full text-black">
-                            </div>
-                            <div>
-                                <label class="block text-white font-semibold mb-1">Alias</label>
+                                <label
+                                    class="block text-white text-xs font-bold mb-1 uppercase tracking-wider">Alias</label>
                                 <input type="text" name="alias" value="<%= usuario.alias %>" required
-                                    class="border rounded-lg px-3 py-2 w-full text-black">
+                                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
                             </div>
+
                             <div>
-                                <label class="block text-white font-semibold mb-1">Email</label>
+                                <label
+                                    class="block text-white text-xs font-bold mb-1 uppercase tracking-wider">Email</label>
                                 <input type="email" name="email" value="<%= usuario.email %>" required
-                                    class="border rounded-lg px-3 py-2 w-full text-black">
+                                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
                             </div>
+
                             <div>
-                                <label class="block text-white font-semibold mb-1">Imagen de perfil</label>
-                                <input type="file" name="imagen_perfil" accept="image/*"
-                                    class="border rounded-lg px-3 py-2 w-full">
+                                <label class="block text-white text-xs font-bold mb-1 uppercase tracking-wider">Imagen
+                                    de perfil</label>
+                                <div class="relative group">
+                                    <input type="file" name="imagen_perfil" accept="image/*"
+                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                    <div
+                                        class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white/60 text-sm group-hover:border-cyan-400 transition-colors">
+                                        Seleccionar nueva imagen...
+                                    </div>
+                                </div>
+
                                 <% if (usuario.imagen_perfil) { %>
-                                    <div class="flex justify-center mt-4">
-                                        <img src="<%= (usuario.imagen_perfil.startsWith('/uploads/') ? usuario.imagen_perfil : '/uploads/' + usuario.imagen_perfil) %>"
-                                            alt="Perfil"
-                                            class="w-40 h-40 rounded-full border-4 border-cyan-400 shadow-lg object-cover">
+                                    <div class="flex justify-center mt-6">
+                                        <div class="relative">
+                                            <img src="<%= (usuario.imagen_perfil.startsWith('/uploads/') ? usuario.imagen_perfil : '/uploads/' + usuario.imagen_perfil) %>"
+                                                alt="Perfil"
+                                                class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-cyan-400 shadow-xl object-cover">
+                                            <div class="absolute inset-0 rounded-full bg-black/20"></div>
+                                        </div>
                                     </div>
                                     <% } %>
                             </div>
+
                             <input type="hidden" name="imagen_perfil_actual" value="<%= usuario.imagen_perfil %>">
 
-                            <div class="flex justify-end">
+                            <div class="flex justify-center md:justify-end">
                                 <a href="/usuario/cambiar-clave"
-                                    class="text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-semibold underline">
-                                    ¿Deseas cambiar tu contraseña?
+                                    class="text-cyan-400 hover:text-white transition-all text-xs font-bold uppercase tracking-widest border-b border-cyan-400/30 hover:border-white">
+                                    Cambiar contraseña
                                 </a>
                             </div>
 
                             <div>
-                                <label class="block text-white font-semibold mb-1">Antecedentes</label>
-                                <textarea name="antecedentes"
-                                    class="border rounded-lg px-3 py-2 w-full text-black"><%= usuario.antecedentes %></textarea>
+                                <label
+                                    class="block text-white text-xs font-bold mb-1 uppercase tracking-wider">Antecedentes</label>
+                                <textarea name="antecedentes" rows="3"
+                                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400 resize-none"><%= usuario.antecedentes %></textarea>
                             </div>
+
                             <div>
-                                <label class="block text-white font-semibold mb-1">Intereses</label>
+                                <label
+                                    class="block text-white text-xs font-bold mb-1 uppercase tracking-wider">Intereses</label>
                                 <input type="text" name="intereses" value="<%= usuario.intereses || '' %>"
-                                    class="border rounded-lg px-3 py-2 w-full text-black">
+                                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
                             </div>
-                            <div class="bg-cyan-800 p-4 rounded-lg shadow-lg">
-                                <label class="block text-white font-semibold mb-1">Portafolio público</label>
-                                <input type="checkbox" name="portafolio_publico" value="1" class="accent-cyan-500"
+
+                            <div class="bg-cyan-900/40 p-4 rounded-xl border border-white/10 flex items-center gap-3">
+                                <input type="checkbox" name="portafolio_publico" value="1" id="portfolio"
+                                    class="w-5 h-5 accent-cyan-400 rounded cursor-pointer"
                                     <%=usuario.portafolio_publico===1 ? 'checked' : '' %> >
-                                <span class="text-white ml-2">Mostrar mi portafolio a todos los usuarios</span>
+                                <label for="portfolio" class="text-white text-sm font-medium cursor-pointer">Mostrar
+                                    portafolio públicamente</label>
                             </div>
+
                             <button type="submit"
-                                class="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 font-medium rounded-lg text-md px-5 py-2 mt-2 hover:scale-107 hover:shadow-md transition-all">Guardar
-                                cambios</button>
+                                class="w-full bg-gradient-to-r from-cyan-400 to-cyan-600 font-bold text-white rounded-xl py-4 hover:scale-[1.02] transition-all shadow-lg shadow-cyan-500/20 mt-2 uppercase tracking-widest">
+                                Guardar Cambios
+                            </button>
                         </form>
             </div>
         </div>

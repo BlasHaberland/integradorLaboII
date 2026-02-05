@@ -21,35 +21,13 @@ if (window.socket) {
 
     window.socket.on('nuevaSolicitud', function (data) {
         incrementarContador();
-        const popout = document.getElementById('popout-solicitud');
-        const msg = document.getElementById('popout-solicitud-msg');
-        if (popout && msg) {
-            msg.textContent = '¡Tienes una nueva solicitud de amistad!';
-            popout.classList.remove('opacity-0', 'pointer-events-none');
-            popout.classList.add('opacity-100');
-            // Ocultar automáticamente después de 5 segundos
-            setTimeout(() => {
-                popout.classList.add('opacity-0', 'pointer-events-none');
-                popout.classList.remove('opacity-100');
-            }, 5000);
-        }
+        showSolicitud('¡Tienes una nueva solicitud de amistad!');
     });
 
     window.socket.on('respuestaAmistad', function (data) {
         incrementarContador();
-        const popout = document.getElementById('popout-solicitud');
-        const msg = document.getElementById('popout-solicitud-msg');
-        if (popout && msg) {
-            msg.textContent = data.mensaje;
-            popout.classList.remove('opacity-0', 'pointer-events-none');
-            popout.classList.add('opacity-100');
-            setTimeout(() => {
-                popout.classList.add('opacity-0', 'pointer-events-none');
-                popout.classList.remove('opacity-100');
-            }, 5000);
-        }
+        showSolicitud(data.mensaje);
     });
-
 
     //notificaciones de comentarios
     window.socket.on('nuevoComentario', function (data) {

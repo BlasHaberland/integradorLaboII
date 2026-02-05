@@ -1,69 +1,185 @@
 <nav
-    class="w-full flex items-center justify-between px-8 py-4 bg-black/40 border-b border-white/30 fixed top-0 left-0 z-20 backdrop-blur-md">
+    class="w-full h-16 md:h-20 flex items-center justify-between px-4 md:px-8 bg-black/60 border-b border-white/20 fixed top-0 left-0 z-[60] backdrop-blur-xl transition-all duration-300">
 
-    <!-- Botón Home a la izquierda -->
-    <div class="flex-none flex items-center gap-4">
+    <!-- Lado Izquierdo: Home -->
+    <div class="flex items-center">
         <a href="/home"
-            class="flex items-center px-4 py-2 rounded border border-white/40 text-white bg-black/30 hover:bg-orange-400 hover:text-black transition">
-            <svg width="24" height="24" class="mr-2">
+            class="flex items-center px-4 py-2 rounded-xl border border-white/20 text-white bg-white/5 hover:bg-orange-500 hover:text-white hover:border-orange-400 transition-all shadow-lg group">
+            <svg width="20" height="20" class="md:mr-2 group-hover:scale-110 transition-transform">
                 <use href="#home"></use>
             </svg>
-            Home
+            <span class="hidden md:inline font-bold uppercase tracking-widest text-xs">Home</span>
         </a>
     </div>
 
-    <div class="flex-1 flex justify-center">
-        <div class="relative w-96">
-            <form id="form-busqueda" action="/buscar" method="GET">
-                <input type="text" name="query" id="barra-busqueda"
-                    placeholder="Buscar usuarios, álbumes o etiquetas..."
-                    class="w-full px-4 py-2 rounded-lg border border-white/40 bg-black/30 text-white placeholder:text-white/60 focus:outline-none pr-10"
+    <!-- Centro: Búsqueda (Desktop only in top bar) -->
+    <div class="hidden md:block flex-1 max-w-md mx-8">
+        <div class="relative group">
+            <form action="/buscar" method="GET">
+                <input type="text" name="query" placeholder="Explorar arte..."
+                    class="w-full px-6 py-2.5 rounded-2xl border border-white/10 bg-white/5 text-white text-sm placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all"
                     autocomplete="off" required />
-                <div id="resultados-busqueda"
-                    class="absolute left-0 right-0 mt-1 bg-white rounded shadow z-50 text-black max-h-60 overflow-y-auto">
-                </div>
+                <button type="submit"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-cyan-400 transition-colors">
+                    <svg width="18" height="18">
+                        <use href="#ojo-cerrado"></use>
+                    </svg>
+                </button>
             </form>
-            <svg id="icono-ojo" width="24" height="24"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-white pointer-events-none transition-all duration-200">
-                <use href="#ojo-cerrado"></use>
-            </svg>
         </div>
     </div>
 
-    <div class="flex items-center gap-4">
-        <!-- Notificaciones -->
-        <a href="/notificaciones" class="relative group p-2 rounded-full hover:bg-white/10 transition-all text-white">
-            <svg width="24" height="24">
+    <!-- Derecha: Acciones Desktop -->
+    <div class="hidden md:flex items-center gap-4">
+        <a href="/notificaciones" class="relative p-3 rounded-2xl hover:bg-white/10 transition-all text-white group"
+            title="Notificaciones">
+            <svg width="22" height="22" class="group-hover:rotate-12 transition-transform">
                 <use href="#campana"></use>
             </svg>
             <% if (typeof notificacionesPendientes !=='undefined' && notificacionesPendientes> 0) { %>
                 <span id="notif-counter"
-                    class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#1E1E1E]">
+                    class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-black animate-pulse">
                     <%= notificacionesPendientes %>
                 </span>
                 <% } %>
         </a>
 
-        <!-- Perfil -->
-        <a href="/usuario/editar" class="p-2 rounded-full hover:bg-white/10 transition-all text-white"
+        <a href="/usuario/editar" class="p-3 rounded-2xl hover:bg-white/10 transition-all text-white group"
             title="Editar Perfil">
-            <svg width="24" height="24">
+            <svg width="22" height="22" class="group-hover:scale-110 transition-transform">
                 <use href="#ajuste"></use>
             </svg>
         </a>
 
-        <form action="/logout" method="POST">
+        <form action="/logout" method="POST" class="m-0">
             <button type="submit"
-                class="px-4 py-2 rounded border border-white/40 text-white bg-black/30 hover:bg-orange-400 hover:text-black transition">Salir</button>
+                class="px-5 py-2.5 rounded-xl border border-white/20 text-white font-bold uppercase tracking-widest text-[10px] bg-white/5 hover:bg-red-500 hover:text-white hover:border-red-400 transition-all shadow-lg active:scale-95">Salir</button>
         </form>
+    </div>
+
+    <!-- Botón Menú Móvil -->
+    <div class="md:hidden flex items-center gap-3">
+        <!-- Campanita móvil -->
+        <a href="/notificaciones" class="relative p-2.5 text-white bg-white/5 rounded-xl border border-white/10">
+            <svg width="20" height="20">
+                <use href="#campana"></use>
+            </svg>
+            <% if (typeof notificacionesPendientes !=='undefined' && notificacionesPendientes> 0) { %>
+                <span
+                    class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full border border-black shadow-lg">
+                    <%= notificacionesPendientes %>
+                </span>
+                <% } %>
+        </a>
+        <button id="btn-mobile-menu"
+            class="text-white p-2.5 bg-white/5 rounded-xl border border-white/10 active:scale-95 transition-all">
+            <svg id="menu-icon" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7">
+                </path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Menú Desplegable "En Cascada" -->
+    <div id="mobile-menu"
+        class="absolute top-full left-0 w-full bg-black/90 backdrop-blur-2xl border-b border-white/10 overflow-hidden max-h-0 transition-all duration-500 ease-in-out md:hidden z-50">
+        <div class="p-6 flex flex-col gap-6">
+            <!-- Búsqueda en menú móvil -->
+            <form action="/buscar" method="GET" class="relative">
+                <input type="text" name="query" placeholder="¿Qué estás buscando?"
+                    class="w-full px-6 py-4 rounded-2xl border border-white/10 bg-white/5 text-white text-lg placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                    autocomplete="off" required />
+                <button type="submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-orange-400">
+                    <svg width="24" height="24">
+                        <use href="#ojo-abierto"></use>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="grid grid-cols-1 gap-3">
+                <a href="/home"
+                    class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 text-white hover:bg-orange-500/20 hover:text-orange-400 border border-white/5 transition-all">
+                    <div class="w-10 h-10 flex items-center justify-center bg-white/5 rounded-xl">
+                        <svg width="24" height="24">
+                            <use href="#home"></use>
+                        </svg>
+                    </div>
+                    <span class="text-lg font-bold">Inicio</span>
+                </a>
+
+                <a href="/notificaciones"
+                    class="flex items-center justify-between p-4 rounded-2xl bg-white/5 text-white hover:bg-cyan-500/20 hover:text-cyan-400 border border-white/5 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 flex items-center justify-center bg-white/5 rounded-xl">
+                            <svg width="24" height="24">
+                                <use href="#campana"></use>
+                            </svg>
+                        </div>
+                        <span class="text-lg font-bold">Notificaciones</span>
+                    </div>
+                    <% if (typeof notificacionesPendientes !=='undefined' && notificacionesPendientes> 0) { %>
+                        <span
+                            class="bg-red-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-lg shadow-red-500/20">
+                            <%= notificacionesPendientes %>
+                        </span>
+                        <% } %>
+                </a>
+
+                <a href="/usuario/editar"
+                    class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 text-white hover:bg-cyan-500/20 hover:text-cyan-400 border border-white/5 transition-all">
+                    <div class="w-10 h-10 flex items-center justify-center bg-white/5 rounded-xl">
+                        <svg width="24" height="24">
+                            <use href="#ajuste"></use>
+                        </svg>
+                    </div>
+                    <span class="text-lg font-bold">Configuración</span>
+                </a>
+
+                <form action="/logout" method="POST" class="mt-4">
+                    <button type="submit"
+                        class="w-full py-5 rounded-[2rem] bg-gradient-to-r from-red-600 to-red-700 text-white text-xl font-black uppercase tracking-widest shadow-2xl shadow-red-900/40 active:scale-95 transition-all">
+                        Cerrar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </nav>
 
 <script>
+    // Lógica menú móvil tipo cascada
+    const btnMobile = document.getElementById('btn-mobile-menu');
+    const menuItems = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    let isOpen = false;
+
+    const toggleMenu = () => {
+        isOpen = !isOpen;
+        if (isOpen) {
+            menuItems.style.maxHeight = '600px';
+            menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>`;
+            menuItems.classList.add('shadow-2xl');
+        } else {
+            menuItems.style.maxHeight = '0';
+            menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>`;
+            menuItems.classList.remove('shadow-2xl');
+        }
+    };
+
+    btnMobile?.addEventListener('click', toggleMenu);
+
+    // Cerrar si se hace click fuera
+    document.addEventListener('click', (e) => {
+        if (isOpen && !menuItems.contains(e.target) && !btnMobile.contains(e.target)) {
+            toggleMenu();
+        }
+    });
+
     const input = document.querySelector('input[name="query"]');
     const icono = document.getElementById('icono-ojo');
 
     function actualizarIcono() {
+        if (!icono) return;
         if (document.activeElement === input || input.value.length > 0) {
             icono.innerHTML = '<use href="#ojo-abierto"></use>';
         } else {
@@ -71,11 +187,10 @@
         }
     }
 
-    actualizarIcono();
-
-    input.addEventListener('focus', actualizarIcono);
-    input.addEventListener('blur', actualizarIcono);
-    input.addEventListener('input', actualizarIcono);
-    input.addEventListener('mouseenter', actualizarIcono);
-    input.addEventListener('mouseleave', actualizarIcono);
+    if (input) {
+        actualizarIcono();
+        input.addEventListener('focus', actualizarIcono);
+        input.addEventListener('blur', actualizarIcono);
+        input.addEventListener('input', actualizarIcono);
+    }
 </script>

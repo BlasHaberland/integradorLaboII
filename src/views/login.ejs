@@ -1,34 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Iniciar sesión - Artesanos.com</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="/favicon.png" type="image/png">
 </head>
-<body class="min-h-screen flex items-center justify-center" style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+
+<body class="min-h-screen flex items-center justify-center"
+    style="background-image: url('/fondo.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
 
     <div class="fixed inset-0 backdrop-blur-md bg-black/10 z-0"></div>
 
-    <div class="relative z-10 bg-orange-200/40 backdrop-blur-sm rounded-3xl p-10 flex flex-col items-center gap-6 shadow-2xl border border-orange-300/60 w-full max-w-md">
+    <div
+        class="relative z-10 bg-orange-200/40 backdrop-blur-md rounded-3xl p-8 md:p-10 flex flex-col items-center gap-6 shadow-2xl border border-orange-300/60 w-full max-w-[90%] md:max-w-md">
 
-        <h2 class="text-3xl font-bold text-slate-800 mb-4 text-white">Iniciar sesión</h2>
+        <h2 class="text-3xl font-bold mb-4 text-white">Iniciar sesión</h2>
 
-        <form id="loginForm" action="/login" method="POST" class="flex flex-col gap-4 w-full " novalidate>
-            <% if (typeof error !== 'undefined' && error) { %>
-                <div class="text-red-600 bg-rose-100 rounded-lg p-2 mb-2 text-center"><%= error %></div>
-            <% } %>
-            <div>
-                <input type="text" id="alias" name="alias" placeholder="Alias" required class="w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500">
-            </div>
+        <form id="loginForm" action="/login" method="POST" class="flex flex-col gap-4 w-full" novalidate>
+            <% if (typeof error !=='undefined' && error) { %>
+                <div
+                    class="text-red-600 bg-rose-100 rounded-xl p-3 mb-2 text-center text-sm font-bold border border-red-200">
+                    <%= error %>
+                </div>
+                <% } %>
+                    <div>
+                        <input type="text" id="alias" name="alias" placeholder="Alias" required
+                            class="bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
+                    </div>
 
-            <div>
-                <input type="password" id="clave" name="clave" placeholder="Contraseña" required class="w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500">
-            </div>
-            <button type="submit" class="w-full text-xl text-white bg-cyan-500 rounded-xl py-3 font-semibold hover:scale-105 hover:bg-cyan-700 transition-all">Ingresar</button>
+                    <div>
+                        <input type="password" id="clave" name="clave" placeholder="Contraseña" required
+                            class="bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400">
+                    </div>
+                    <button type="submit"
+                        class="w-full text-xl text-white bg-cyan-500 rounded-xl py-3 font-bold hover:scale-[1.02] hover:bg-cyan-600 transition-all shadow-lg shadow-cyan-500/20 mt-2">Ingresar</button>
         </form>
-        <a href="/registro" class="text-cyan-200 hover:underline">¿No tienes cuenta? Regístrate</a>
+        <a href="/registro" class="text-cyan-200 hover:text-white transition-colors text-sm font-medium">¿No tienes
+            cuenta? Regístrate aquí</a>
     </div>
-<script src="/js/validacion-login.js"></script>
+    <script src="/js/validacion-login.js"></script>
 </body>
+
 </html>
