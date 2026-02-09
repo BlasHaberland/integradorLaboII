@@ -19,6 +19,25 @@ if (window.socket) {
         }
     }
 
+    function showSolicitud(mensaje) {
+        const popout = document.getElementById('popout-solicitud');
+        const msgSpan = document.getElementById('popout-solicitud-msg');
+
+        if (popout && msgSpan) {
+            msgSpan.textContent = mensaje;
+            
+            // Mostrar con animación
+            popout.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-10');
+            popout.classList.add('opacity-100', 'translate-y-0');
+
+            // Ocultar automáticamente tras 5 segundos
+            setTimeout(() => {
+                popout.classList.add('opacity-0', 'pointer-events-none', 'translate-y-10');
+                popout.classList.remove('opacity-100', 'translate-y-0');
+            }, 5000);
+        }
+    }
+
     window.socket.on('nuevaSolicitud', function (data) {
         incrementarContador();
         showSolicitud('¡Tienes una nueva solicitud de amistad!');
@@ -38,21 +57,19 @@ if (window.socket) {
         const autorImg = document.getElementById('popout-comentario-img');
 
         if (popout && msg) {
-
             msg.innerHTML = `<strong>${data.autor}</strong> comentó: "${data.extracto}"`;
-
 
             if (autorImg) {
                 autorImg.src = data.imagen_autor;
             }
 
-
-            popout.classList.remove('opacity-0', 'pointer-events-none');
-            popout.classList.add('opacity-100');
+            // Mostrar con animación
+            popout.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-10');
+            popout.classList.add('opacity-100', 'translate-y-0');
 
             setTimeout(() => {
-                popout.classList.add('opacity-0', 'pointer-events-none');
-                popout.classList.remove('opacity-100');
+                popout.classList.add('opacity-0', 'pointer-events-none', 'translate-y-10');
+                popout.classList.remove('opacity-100', 'translate-y-0');
             }, 5000);
         }
     });

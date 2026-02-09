@@ -33,7 +33,10 @@ router.get('/', [autMiddleware], async (req, res) => {
 
         // 3. BUSCAR IMÁGENES (por título o descripción)
         const [imagenes] = await db.query(
-            'SELECT * FROM imagenes WHERE titulo LIKE ? OR descripcion LIKE ?',
+            `SELECT i.*, a.id_usuario as id_owner 
+             FROM imagenes i 
+             JOIN albumes a ON i.id_album = a.id_album 
+             WHERE (i.titulo LIKE ? OR i.descripcion LIKE ?) AND i.bloqueada = 0`,
             [wildQuery, wildQuery]
         );
 
