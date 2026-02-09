@@ -1,0 +1,40 @@
+<!-- MODAL DE REPORTE -->
+<div id="modalReporte"
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 transition-all duration-300"
+    style="display: none;">
+    <div
+        class="bg-sky-950 rounded-2xl p-6 w-full max-w-md shadow-2xl relative border border-white/20 transform transition-all">
+        <button id="cerrarModalReporte" type="button"
+            class="absolute top-2 right-4 text-3xl text-white/60 hover:text-white">&times;</button>
+
+        <h2 class="text-2xl font-bold mb-4 text-white text-center">Reportar Imagen</h2>
+        <p class="text-cyan-200/60 text-sm text-center mb-6">Ayúdanos a mantener la comunidad segura.</p>
+
+        <form id="formReporte" class="flex flex-col gap-4">
+            <input type="hidden" name="id_imagen" id="reporteIdImagen">
+
+            <div class="space-y-2">
+                <label class="text-white text-sm font-semibold">Motivo del reporte</label>
+                <select name="motivo" required
+                    class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 appearance-none">
+                    <option value="spam" class="bg-sky-900 text-white">Spam</option>
+                    <option value="inapropiado" class="bg-sky-900 text-white">Contenido Inapropiado</option>
+                    <option value="violencia" class="bg-sky-900 text-white">Violencia</option>
+                    <option value="derechos_autor" class="bg-sky-900 text-white">Derechos de Autor</option>
+                    <option value="otros" class="bg-sky-900 text-white">Otros</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-white text-sm font-semibold">Descripción (opcional)</label>
+                <textarea name="descripcion" rows="3" placeholder="Brinda más detalles..."
+                    class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-cyan-400 resize-none"></textarea>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-red-600 hover:bg-red-500 font-bold text-white rounded-xl py-4 transition-all shadow-lg mt-2">
+                ENVIAR REPORTE
+            </button>
+        </form>
+    </div>
+</div>

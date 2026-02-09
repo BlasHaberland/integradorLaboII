@@ -63,12 +63,12 @@ router.get('/:id', [autMiddleware], async (req, res) => {
             [imagenes] = await db.query(
                 `SELECT i.* FROM imagenes i 
                  JOIN albumes a ON i.id_album = a.id_album 
-                 WHERE a.id_usuario = ? AND i.compartida = 1`,
+                 WHERE a.id_usuario = ? AND i.compartida = 1 AND i.bloqueada = 0`,
                 [album.id_usuario_compartido]
             );
         } else {
             // Es un álbum normal: traemos sus imágenes
-            [imagenes] = await db.query("SELECT * FROM imagenes WHERE id_album = ?", [id_album]);
+            [imagenes] = await db.query("SELECT * FROM imagenes WHERE id_album = ? AND bloqueada = 0", [id_album]);
         }
 
         for (let img of imagenes) {
