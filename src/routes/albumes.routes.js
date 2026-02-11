@@ -52,10 +52,37 @@ router.get('/:id', [autMiddleware], async (req, res) => {
 
         const db = await initConnection();
 
-        // Obtener datos del álbum
-        const [albumRows] = await db.query("SELECT * FROM albumes WHERE id_album = ?", [id_album]);
+        // Obtener datos del álbum y del dueño
+        const [albumRows] = await db.query(
+            `SELECT a.*, u.portafolio_publico, u.id_usuario as id_duenio 
+             FROM albumes a 
+             JOIN usuarios u ON a.id_usuario = u.id_usuario 
+             WHERE a.id_album = ?`,
+            [id_album]
+        );
+
         if (albumRows.length === 0) return res.status(404).send('Álbum no encontrado');
         const album = albumRows[0];
+
+        // Verificar permisos de visualización
+        // 1. Es el dueño
+        // 2. El portafolio es público
+        // 3. Son amigos (estado aceptada)
+        let tienePermiso = album.id_duenio === req.usuario.id || album.portafolio_publico === 1;
+
+        if (!tienePermiso) {
+            const [amistad] = await db.query(
+                `SELECT * FROM amistades 
+                 WHERE ((id_remitente = ? AND id_destinatario = ?) OR (id_remitente = ? AND id_destinatario = ?))
+                 AND estado = 'aceptada'`,
+                [req.usuario.id, album.id_duenio, album.id_duenio, req.usuario.id]
+            );
+            if (amistad.length > 0) tienePermiso = true;
+        }
+
+        if (!tienePermiso) {
+            return res.status(403).render('no-permiso', { query: album.titulo });
+        }
 
         let imagenes = [];
         if (album.id_usuario_compartido) {
